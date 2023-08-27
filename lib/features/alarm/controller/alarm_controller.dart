@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
@@ -48,9 +49,6 @@ class AlarmController extends ChangeNotifier {
 
   setRepeat(Repeat val) {
     repeat = val;
-    print('hiii2');
-    print(repeat);
-
     notifyListeners();
   }
 
@@ -111,7 +109,7 @@ class AlarmController extends ChangeNotifier {
           alarmSound: selectedTune,
           time: alarmTime,
           isEnable: true);
-      await ref.read(alarmRepoProvider).scheduleAlarm(alarmModel);
+      await ref.read(notificationRepoProvider).scheduleAlarm(alarmModel, false);
       await LocalDb.localDb.addAlarm(alarmModel);
     }
     context.pop();

@@ -1,3 +1,6 @@
+import 'package:inspire_us/features/recording/ui/widgets/recording_widget.dart';
+import 'package:inspire_us/features/recording/ui/widgets/upload_widget.dart';
+
 import '../../../../common/config/theme/theme_export.dart';
 
 class RecordingView extends ConsumerWidget {
@@ -21,7 +24,8 @@ class RecordingView extends ConsumerWidget {
             ),
           ),
         ]),
-        // const TabBarView(children: [RecordingWidget(), UploadWidget()])
+        const Expanded(
+            child: TabBarView(children: [RecordingWidget(), UploadWidget()]))
       ],
     );
   }

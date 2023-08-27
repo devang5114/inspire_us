@@ -31,5 +31,32 @@ class AppTheme {
         dialHandColor: Colors.black,
       ));
 
-  static ThemeData darkTheme = ThemeData.dark();
+  static ThemeData darkTheme = ThemeData.dark().copyWith(
+      useMaterial3: true,
+      switchTheme: const SwitchThemeData(),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+      ),
+      colorScheme: ColorScheme(
+          brightness: Brightness.dark,
+          primary: Colors.blueAccent,
+          onPrimary: Colors.white,
+          secondary: Colors.blueAccent,
+          onSecondary: Colors.white,
+          error: Colors.redAccent,
+          onError: Colors.white,
+          background: Colors.white,
+          onBackground: Colors.black,
+          surface: Colors.grey.shade100,
+          onSurface: Colors.black),
+      textTheme: GoogleFonts.aBeeZeeTextTheme(),
+      timePickerTheme: TimePickerThemeData(
+        dialBackgroundColor: Colors.blueAccent,
+        elevation: 0,
+        dayPeriodTextColor: Colors.black,
+        hourMinuteTextStyle: TextStyle(fontSize: 40.sp),
+        backgroundColor: Colors.black,
+        dialTextColor: Colors.white,
+        dialHandColor: Colors.black,
+      ));
 }

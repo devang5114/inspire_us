@@ -27,8 +27,7 @@ class _AddAlarmState extends ConsumerState<AddAlarm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return const Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

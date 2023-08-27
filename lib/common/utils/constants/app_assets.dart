@@ -7,4 +7,5 @@ class AppAssets {
   static const String alarmClock = 'assets/images/alarm-clock.png';
   static const String recording = 'assets/images/recordings.png';
   static const String record = 'assets/images/record.png';
+  static const String voiceIcon = 'assets/images/voice.png';
 }

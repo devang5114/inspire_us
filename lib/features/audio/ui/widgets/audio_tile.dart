@@ -60,7 +60,9 @@ class _AudioTileState extends ConsumerState<AudioTile>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AudioControls(audioPlayer: audioPlayer),
-                  AudioProgressBar(positionDataStream: _positionDataStream),
+                  AudioProgressBar(
+                      positionDataStream: _positionDataStream,
+                      audioPlayer: audioPlayer),
                   // IconButton(
                   //     onPressed: () {}, icon: const Icon(Icons.volume_up)),
                   PopupMenuButton(

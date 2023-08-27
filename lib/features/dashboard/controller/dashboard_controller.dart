@@ -1,3 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 
 final dashboardController = ChangeNotifierProvider<DashboardController>((ref) {
@@ -5,14 +8,13 @@ final dashboardController = ChangeNotifierProvider<DashboardController>((ref) {
 });
 
 class DashboardController extends ChangeNotifier {
-  DashboardController(this.ref);
+  DashboardController(this.ref) {}
   TabController? tabController;
   Ref ref;
-  int index = 0;
+  int index = 2;
 
-  init(TabController val) {
+  init(TabController val, BuildContext context) async {
     tabController = val;
-    notifyListeners();
     tabController!.addListener(() {
       index = tabController!.index;
       notifyListeners();
@@ -20,7 +22,6 @@ class DashboardController extends ChangeNotifier {
   }
 
   setPage(int i) {
-    index = i;
-    notifyListeners();
+    tabController!.animateTo(i);
   }
 }

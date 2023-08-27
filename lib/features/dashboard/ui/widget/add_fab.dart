@@ -3,6 +3,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 
+import '../../../../common/common_repository/notification_repository.dart';
 import '../../../alarm/controller/alarm_controller.dart';
 import '../../../alarm/ui/screens/add_alarm.dart';
 
@@ -21,6 +22,8 @@ class AddFab extends ConsumerWidget {
           enableFeedback: true,
           shape: const CircleBorder(),
           onPressed: () async {
+            // ref.read(notificationRepoProvider).showSimpleNotification();
+
             ref.read(alarmController.notifier).alarmTime = DateTime.now();
             action.call();
           },

@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
@@ -8,6 +9,7 @@ import '../../../recording/ui/screens/recording.dart';
 import '../../controller/dashboard_controller.dart';
 import '../widget/bottom_navbar.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../../../../common/common_repository/notification_repository.dart';
 
 class DashBoard extends ConsumerStatefulWidget {
   const DashBoard({super.key});
@@ -23,7 +25,8 @@ class _DashBoardState extends ConsumerState<DashBoard>
   void initState() {
     super.initState();
     tabController = TabController(length: 5, vsync: this, initialIndex: 2);
-    ref.read(dashboardController).init(tabController);
+    ref.read(notificationRepoProvider).requestPermission();
+    ref.read(dashboardController).init(tabController, context);
   }
 
   @override

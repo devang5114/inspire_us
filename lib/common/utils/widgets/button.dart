@@ -7,8 +7,8 @@ class Button extends StatelessWidget {
       required this.child,
       required this.onPressed,
       this.icon,
-      this.backgroundColor = Colors.blue,
-      this.borderRadius = BorderRadius.zero,
+      this.backgroundColor,
+      this.borderRadius,
       this.height,
       this.width,
       this.elevation,
@@ -18,8 +18,8 @@ class Button extends StatelessWidget {
   final void Function() onPressed;
   final EdgeInsets? padding;
   final Widget? icon;
-  final Color backgroundColor;
-  final BorderRadius borderRadius;
+  final Color? backgroundColor;
+  final BorderRadius? borderRadius;
   final double? height;
   final double? width;
   final bool disable;
@@ -32,7 +32,10 @@ class Button extends StatelessWidget {
       return ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
               backgroundColor: backgroundColor,
-              shape: RoundedRectangleBorder(borderRadius: borderRadius)),
+              padding: padding,
+              shape: borderRadius != null
+                  ? RoundedRectangleBorder(borderRadius: borderRadius!)
+                  : null),
           onPressed: disable ? null : onPressed,
           icon: icon!,
           label: child);
@@ -43,7 +46,9 @@ class Button extends StatelessWidget {
             elevation: elevation,
             side: borderSide,
             backgroundColor: backgroundColor,
-            shape: RoundedRectangleBorder(borderRadius: borderRadius)),
+            shape: borderRadius != null
+                ? RoundedRectangleBorder(borderRadius: borderRadius!)
+                : null),
         onPressed: disable ? null : onPressed,
         child: child);
   }

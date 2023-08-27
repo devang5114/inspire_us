@@ -15,9 +15,10 @@ class TextInput extends StatelessWidget {
       this.hintText,
       this.padding,
       this.borderInputNone = false,
-      this.prefixIcon
-      // required this.onSaved
-      });
+      this.prefixIcon,
+      this.customBorder,
+      this.onTap,
+      this.focusNode});
 
   final String? label;
   final String? hintText;
@@ -29,12 +30,15 @@ class TextInput extends StatelessWidget {
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
   String? Function(String?)? onChange;
-
+  final void Function()? onTap;
+  final OutlineInputBorder? customBorder;
+  final FocusNode? focusNode;
   String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
       keyboardType: keyboardType,
       obscureText: obscureText,
       autovalidateMode: autoValidateMode
@@ -43,6 +47,7 @@ class TextInput extends StatelessWidget {
       style: TextStyle(fontSize: 16.sp),
       cursorColor: context.primaryColor,
       textAlignVertical: TextAlignVertical.bottom,
+      onTap: onTap,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
@@ -53,17 +58,20 @@ class TextInput extends StatelessWidget {
         hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
         border: borderInputNone
             ? InputBorder.none
-            : UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent)),
+            : customBorder ??
+                const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueAccent)),
 
         focusedBorder: borderInputNone
             ? InputBorder.none
-            : UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent)),
+            : customBorder ??
+                const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueAccent)),
         enabledBorder: borderInputNone
             ? InputBorder.none
-            : UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent)),
+            : customBorder ??
+                const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueAccent)),
 
         // border:
       ),

@@ -1,19 +1,19 @@
-
-
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/features/dashboard/controller/dashboard_controller.dart';
 
 import '../../../../common/config/router/app_routes.dart';
 import '../../../../common/utils/constants/app_assets.dart';
 import '../../controller/home_controller.dart';
 
 class HomeDrawer extends ConsumerWidget {
-  const HomeDrawer({super.key});
+  const HomeDrawer(this.scaffoldKey, {super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
-        child: Padding(
+        child: SingleChildScrollView(
       padding: EdgeInsets.fromLTRB(10.w, 20.h, 0.w, 30.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,7 +23,9 @@ class HomeDrawer extends ConsumerWidget {
             style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              scaffoldKey.currentState!.closeDrawer();
+            },
             leading: Image.asset(
               AppAssets.homeIcon,
               height: 20.h,
@@ -40,7 +42,9 @@ class HomeDrawer extends ConsumerWidget {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              ref.read(dashboardController.notifier).setPage(3);
+            },
             leading: const Icon(
               Icons.layers,
               color: Colors.blueAccent,
@@ -55,7 +59,9 @@ class HomeDrawer extends ConsumerWidget {
             ),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              ref.read(dashboardController.notifier).setPage(0);
+            },
             leading: const Icon(
               Icons.layers,
               color: Colors.blueAccent,
@@ -96,21 +102,6 @@ class HomeDrawer extends ConsumerWidget {
             'settings'.toUpperCase(),
             style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600),
           ),
-          ListTile(
-            onTap: () {},
-            leading: Icon(
-              Icons.color_lens,
-              color: Colors.blueAccent,
-            ),
-            title: Text(
-              'Highlights',
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios_sharp,
-              size: 20.h,
-            ),
-          ),
           SwitchListTile(
             value: ref.watch(homeController).darkMode,
             onChanged: (value) {
@@ -131,7 +122,7 @@ class HomeDrawer extends ConsumerWidget {
               ],
             ),
           ),
-          const Spacer(),
+          SizedBox(height: 220.h),
           Text(
             'Inspire Us',
             style: TextStyle(

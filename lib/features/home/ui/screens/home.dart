@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
 import '../widgets/home_drawee.dart';
 import '../widgets/home_view.dart';
@@ -11,35 +12,23 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-    return Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-              onPressed: () {
-                scaffoldKey.currentState?.openDrawer();
-              },
-              icon: const Icon(
-                Icons.grid_view_rounded,
-                color: Colors.blueAccent,
-              )),
-          actions: [
-            IconButton(
+    return GestureDetector(
+      onTap: () => context.focusScope.unfocus(),
+      child: Scaffold(
+          key: scaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
                 onPressed: () {
-                  showBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return const ThemeColorPickerBottomSheet();
-                    },
-                  );
+                  scaffoldKey.currentState?.openDrawer();
                 },
-                icon: Icon(
-                  Icons.color_lens,
+                icon: const Icon(
+                  Icons.grid_view_rounded,
                   color: Colors.blueAccent,
-                ))
-          ],
-        ),
-        drawer: const HomeDrawer(),
-        body: const HomeView());
+                )),
+          ),
+          drawer: HomeDrawer(scaffoldKey),
+          body: const HomeView()),
+    );
   }
 }

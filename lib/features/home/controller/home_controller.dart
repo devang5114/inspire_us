@@ -2,18 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:intl/intl.dart';
 
 final homeController = ChangeNotifierProvider<HomeController>((ref) {
-  return HomeController();
+  return HomeController(ref);
 });
 
 class HomeController extends ChangeNotifier {
-  HomeController() {
+  HomeController(this.ref) {
     Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       updateTime();
     });
   }
+  Ref ref;
   FocusNode focusNode = FocusNode();
   String getCurrentTime = '';
   String get currentTime => getCurrentTime;
@@ -22,6 +24,13 @@ class HomeController extends ChangeNotifier {
 
   toggleDarkMode() {
     darkMode = !darkMode;
+    ref.read(themeModeProvider.notifier).update((state) {
+      if (state == ThemeMode.light) {
+        return ThemeMode.dark;
+      } else {
+        return ThemeMode.light;
+      }
+    });
     notifyListeners();
   }
 
