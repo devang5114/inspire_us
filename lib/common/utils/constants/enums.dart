@@ -1,1 +1,1 @@
-enum Repeat { never, dayWise }
+enum Repeat { once, dayWise }

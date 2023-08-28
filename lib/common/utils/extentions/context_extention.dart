@@ -15,7 +15,8 @@ extension ContextExt on BuildContext {
   void pushAndReplaceNamed(String route) =>
       Navigator.pushReplacementNamed(this, route);
 
-  void popAndPushNamed(String route) => Navigator.popAndPushNamed(this, route);
+  void popAndPushNamed(String route, {dynamic arguments}) =>
+      Navigator.popAndPushNamed(this, route, arguments: arguments);
 
   void showSnackBar(String msg) {
     ScaffoldMessenger.of(this).showSnackBar(

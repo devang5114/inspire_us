@@ -4,7 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/features/audio/ui/screens/audio.dart';
 import 'package:inspire_us/features/home/ui/screens/home.dart';
+import '../../../../common/config/theme/theme_manager.dart';
 import '../../../alarm/ui/screens/alarm.dart';
+import '../../../profile/ui/screens/profile.dart';
 import '../../../recording/ui/screens/recording.dart';
 import '../../controller/dashboard_controller.dart';
 import '../widget/bottom_navbar.dart';
@@ -26,7 +28,7 @@ class _DashBoardState extends ConsumerState<DashBoard>
     super.initState();
     tabController = TabController(length: 5, vsync: this, initialIndex: 2);
     ref.read(notificationRepoProvider).requestPermission();
-    ref.read(dashboardController).init(tabController, context);
+    ref.read(dashboardController).init(tabController);
   }
 
   @override
@@ -42,12 +44,15 @@ class _DashBoardState extends ConsumerState<DashBoard>
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
+
     final dashBoardWatch = ref.watch(dashboardController);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.dark,
-        statusBarColor: Colors.blueAccent,
-        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
+        statusBarColor: isDarkMode ? Colors.black : Colors.white,
+        statusBarIconBrightness:
+            isDarkMode ? Brightness.light : Brightness.dark,
       ),
       child: SafeArea(
         child: DefaultTabController(
@@ -62,7 +67,7 @@ class _DashBoardState extends ConsumerState<DashBoard>
                 const Audio().animate().fade(),
                 const Home().animate().fade(),
                 const Recording().animate().fade(),
-                const Center(child: FlutterLogo()).animate().fade(),
+                const Profile().animate().fade(),
               ],
             ),
             bottomNavigationBar: BottomNavBar(tabController),

@@ -9,6 +9,14 @@ class LocalDb {
 
   static LocalDb localDb = LocalDb._();
 
+  Future<dynamic> getValue(String key, {dynamic defaultValue}) async {
+    return await Hive.box('inspireUs').get(key, defaultValue: defaultValue);
+  }
+
+  Future<dynamic> putValue(String key, dynamic value) async {
+    return await Hive.box('inspireUs').put(key, value);
+  }
+
   Future<void> addAlarm(AlarmModel alarmModel) async {
     final box = Hive.box<AlarmModel>('alarm');
     await box.add(alarmModel);

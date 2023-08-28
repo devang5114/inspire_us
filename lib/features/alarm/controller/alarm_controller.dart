@@ -23,7 +23,7 @@ class AlarmController extends ChangeNotifier {
   Ref ref;
   List<AlarmModel> alarms = [];
   TextEditingController labelController = TextEditingController();
-  Repeat repeat = Repeat.never;
+  Repeat repeat = Repeat.once;
   List<Day> days = [
     Day(name: 'Mon', isEnable: false),
     Day(name: 'Tue', isEnable: false),

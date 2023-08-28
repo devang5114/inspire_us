@@ -2,6 +2,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/features/dashboard/ui/widget/add_fab.dart';
 
+import '../../../../common/config/theme/theme_manager.dart';
 import '../widget/alarms_list.dart';
 
 class Alarm extends ConsumerWidget {
@@ -9,6 +10,8 @@ class Alarm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -16,7 +19,7 @@ class Alarm extends ConsumerWidget {
           'Alarm Taging',
           style: TextStyle(
               fontSize: 20.sp,
-              color: Colors.blueAccent,
+              color: isDarkMode ? Colors.white : Colors.blueAccent,
               fontWeight: FontWeight.w600),
         ),
       ),

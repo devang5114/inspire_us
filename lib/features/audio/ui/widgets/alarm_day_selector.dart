@@ -1,5 +1,7 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/constants/enums.dart';
+import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
 import '../../../alarm/controller/alarm_controller.dart';
 
@@ -8,6 +10,7 @@ class AlarmDaySelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
     final alarmWatch = ref.watch(alarmController);
     Widget alarmDays = SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -23,8 +26,9 @@ class AlarmDaySelector extends ConsumerWidget {
                 labelStyle: TextStyle(fontSize: 12.sp),
                 shape: CircleBorder(
                     side: BorderSide(color: Colors.grey.withOpacity(.1))),
-                backgroundColor: Colors.white,
-                selectedColor: Colors.blue,
+                backgroundColor:
+                    isDarkMode ? Colors.white : Colors.white.withOpacity(.7),
+                selectedColor: context.colorScheme.primary,
                 label: Text(
                   day.name,
                   style: TextStyle(
@@ -52,20 +56,28 @@ class AlarmDaySelector extends ConsumerWidget {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   )),
-              items: const [
-                DropdownMenuItem(value: 'dayWise', child: Text('Day wise')),
+              items: [
                 DropdownMenuItem(
-                    value: 'never',
+                    value: 'dayWise',
                     child: Text(
-                      'Never',
+                      'Day wise',
+                      style: TextStyle(
+                          fontSize: 15.sp,
+                          color: context.colorScheme.onBackground),
                     )),
+                DropdownMenuItem(
+                    value: 'once',
+                    child: Text('Once',
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: context.colorScheme.onBackground))),
               ],
               onChanged: (val) {
                 print(val);
 
-                if (val == 'never') {
+                if (val == 'once') {
                   print(val);
-                  ref.read(alarmController.notifier).setRepeat(Repeat.never);
+                  ref.read(alarmController.notifier).setRepeat(Repeat.once);
                 } else if (val == 'dayWise') {
                   ref.read(alarmController.notifier).setRepeat(Repeat.dayWise);
                 }

@@ -8,10 +8,14 @@ class AudioList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
       physics: const BouncingScrollPhysics(),
       itemCount: 7,
       itemBuilder: (context, index) {
-        return const AudioTile('assets/audio/sound.mp3');
+        return const AudioTile(
+          title: 'Audios',
+          audioPath: 'assets/audio/sound.mp3',
+        );
       },
     );
   }

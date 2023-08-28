@@ -22,9 +22,9 @@ class Home extends ConsumerWidget {
                 onPressed: () {
                   scaffoldKey.currentState?.openDrawer();
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.grid_view_rounded,
-                  color: Colors.blueAccent,
+                  color: context.colorScheme.primary,
                 )),
           ),
           drawer: HomeDrawer(scaffoldKey),

@@ -1,6 +1,6 @@
-String? nameValidator(String? input) {
+String? nameValidator(String? input, {bool isOtp = false}) {
   if (input == null || input.trim().length < 2) {
-    return 'Name must be 2 characters long';
+    return '${isOtp ? 'Otp' : 'Name'} must be 2 characters long';
   } else {
     return null;
   }

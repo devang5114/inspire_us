@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
 import '../../../../common/common_repository/notification_repository.dart';
 import '../../../alarm/controller/alarm_controller.dart';
@@ -14,8 +15,8 @@ class AddFab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return OpenContainer(
       closedShape: const CircleBorder(),
-      closedColor: Colors.blueAccent,
-      openColor: Colors.blueAccent,
+      closedColor: context.colorScheme.primary,
+      openColor: context.colorScheme.primary,
       transitionDuration: 500.ms,
       closedBuilder: (context, action) {
         return FloatingActionButton(

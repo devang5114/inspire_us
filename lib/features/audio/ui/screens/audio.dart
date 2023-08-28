@@ -1,5 +1,6 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 
+import '../../../../common/config/theme/theme_manager.dart';
 import '../widgets/audio_list.dart';
 
 class Audio extends ConsumerWidget {
@@ -7,14 +8,14 @@ class Audio extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
           title: Text(
             'Audio List',
             style: TextStyle(
                 fontSize: 20.sp,
-                color: Colors.blueAccent,
+                color: isDarkMode ? Colors.white : Colors.blueAccent,
                 fontWeight: FontWeight.w600),
           ),
         ),

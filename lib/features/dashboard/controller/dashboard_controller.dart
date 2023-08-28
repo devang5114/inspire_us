@@ -8,20 +8,18 @@ final dashboardController = ChangeNotifierProvider<DashboardController>((ref) {
 });
 
 class DashboardController extends ChangeNotifier {
-  DashboardController(this.ref) {}
+  DashboardController(this.ref);
   TabController? tabController;
   Ref ref;
   int index = 2;
 
-  init(TabController val, BuildContext context) async {
+  init(TabController val) async {
     tabController = val;
-    tabController!.addListener(() {
-      index = tabController!.index;
-      notifyListeners();
-    });
   }
 
   setPage(int i) {
     tabController!.animateTo(i);
+    index = i;
+    notifyListeners();
   }
 }

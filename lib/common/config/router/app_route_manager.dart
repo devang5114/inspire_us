@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:inspire_us/common/model/alarm_model.dart';
+import 'package:inspire_us/features/alarm/ui/screens/add_alarm.dart';
+import 'package:inspire_us/features/auth/ui/screens/confirm_otp.dart';
+import 'package:inspire_us/features/profile/ui/screens/profile_edit.dart';
+import 'package:inspire_us/features/recording/ui/screens/my_recordings.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../../features/alarm/ui/screens/alarm_ring.dart';
@@ -17,6 +22,9 @@ class AppRouteManager {
       case AppRoutes.register:
         return PageTransition(
             child: const Register(), type: PageTransitionType.fade);
+      case AppRoutes.confirmOtp:
+        return PageTransition(
+            child: const ConfirmOtp(), type: PageTransitionType.fade);
       case AppRoutes.login:
         return PageTransition(
             child: const Login(), type: PageTransitionType.fade);
@@ -24,10 +32,21 @@ class AppRouteManager {
       case AppRoutes.dashboard:
         return PageTransition(
             child: const DashBoard(), type: PageTransitionType.fade);
+      // case AppRoutes.addAlarm:
+      //   return PageTransition(
+      //       child: AddAlarm(
+      //           alarmModel: argument['alarmModel'], index: argument['index']),
+      //       type: PageTransitionType.fade);
 
       case AppRoutes.alarmRing:
         return PageTransition(
             child: const AlarmRing(), type: PageTransitionType.fade);
+      case AppRoutes.editProfile:
+        return PageTransition(
+            child: const ProfileEdit(), type: PageTransitionType.rightToLeft);
+      case AppRoutes.myRecording:
+        return PageTransition(
+            child: const MyRecordings(), type: PageTransitionType.rightToLeft);
 
       default:
         return MaterialPageRoute(

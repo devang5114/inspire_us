@@ -13,19 +13,14 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarColor: Colors.blueAccent,
-      statusBarIconBrightness: Brightness.light,
-    ),
-  );
+
   initializeTimeZones();
   await initAwesomeNotifications();
   await Hive.initFlutter();
+  await Hive.openBox('inspireUs');
+  await Hive.openBox<AlarmModel>('alarm');
   Hive.registerAdapter(AlarmModelAdapter());
   Hive.registerAdapter(DayAdapter());
-  await Hive.openBox<AlarmModel>('alarm');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -42,7 +37,7 @@ class MyApp extends ConsumerWidget {
               darkTheme: AppTheme.darkTheme,
               themeMode: ref.watch(themeModeProvider),
               onGenerateRoute: AppRouteManager.onGenerateRoute,
-              initialRoute: AppRoutes.dashboard,
+              initialRoute: AppRoutes.splash,
             ));
   }
 }
@@ -65,6 +60,8 @@ Future<void> initAwesomeNotifications() async {
   });
   AwesomeNotifications().actionStream.listen((action) {
     if (action.buttonKeyPressed == 'SNOOZE') {
+      NotificationRepository().stopAlarm();
+    } else {
       NotificationRepository().stopAlarm();
     }
   });

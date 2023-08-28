@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
 class BusyOverlay extends StatelessWidget {
   const BusyOverlay({super.key, required this.child, required this.show});
@@ -30,9 +31,9 @@ class BusyOverlay extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10.r)),
-                        child: const Center(
+                        child: Center(
                           child: CircularProgressIndicator(
-                            color: Colors.blueAccent,
+                            color: context.colorScheme.primary,
                           ),
                         )),
                   ),
