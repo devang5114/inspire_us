@@ -7,6 +7,7 @@ import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/widgets/text_input.dart';
 import 'package:inspire_us/features/alarm/ui/alarm_tile.dart';
 import 'package:inspire_us/features/alarm/ui/screens/add_alarm.dart';
+import 'package:inspire_us/features/home/controller/home_controller.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../common/config/theme/theme_manager.dart';
@@ -20,6 +21,7 @@ class Search extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
     final timeFormater = DateFormat('hh:mm a');
+    final homeWatch = ref.watch(homeController);
 
     return SafeArea(
       child: Scaffold(
@@ -45,6 +47,9 @@ class Search extends ConsumerWidget {
                   Expanded(
                     child: MyTextInput(
                       borderInputNone: true,
+                      onChange: (val) {
+                        ref.read(homeController.notifier).onSearch(val!);
+                      },
                       hintText: 'Search Alarm for Tagging',
                     ),
                   ),
@@ -56,10 +61,11 @@ class Search extends ConsumerWidget {
                     valueListenable: LocalDb.localDb.alarmBoxListenable,
                     builder: (context, alarmBox, child) {
                       if (alarmBox.values.isEmpty) {
-                        return const Center(child: Text('No Alarms Taged'));
+                        return const Center(child: Text('No Alarms Tagged'));
                       }
                       return ListView.separated(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 10.h),
                         separatorBuilder: (context, index) => Divider(
                           color: context.colorScheme.surface,
                           height: 3.h,
@@ -69,39 +75,83 @@ class Search extends ConsumerWidget {
                         itemCount: alarmBox.length,
                         itemBuilder: (context, index) {
                           AlarmModel alarmModel = alarmBox.getAt(index)!;
-                          return OpenContainer(
-                            closedElevation: 0,
-                            openElevation: 0,
-                            openBuilder: (context, action) {
-                              return AddAlarm(
-                                index: index,
-                                alarmModel: alarmModel,
-                              );
-                            },
-                            closedBuilder: (context, action) {
-                              return ListTile(
-                                onTap: () {
-                                  context.pop();
-                                  action.call();
-                                },
-                                  <key>NSMicrophoneUsageDescription</key>
-                              <string>We need access to the microphone for audio recording.</string>
-                                title: Text(
-                                    alarmModel.label.isEmpty
-                                        ? 'Alarm'
-                                        : alarmModel.label,
+                          if (homeWatch.searchVal.isEmpty) {
+                            return OpenContainer(
+                              closedElevation: 0,
+                              openElevation: 0,
+                              openBuilder: (context, action) {
+                                return AddAlarm(
+                                  index: index,
+                                  alarmModel: alarmModel,
+                                );
+                              },
+                              closedBuilder: (context, action) {
+                                return ListTile(
+                                  tileColor:
+                                      isDarkMode ? Colors.black : Colors.white,
+                                  onTap: () {
+                                    context.pop();
+                                    action.call();
+                                  },
+                                  title: Text(
+                                      alarmModel.label.isEmpty
+                                          ? 'Alarm'
+                                          : alarmModel.label,
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          color: context
+                                              .colorScheme.onBackground)),
+                                  subtitle: Text(
+                                    timeFormater.format(alarmModel.time),
                                     style: TextStyle(
-                                        fontSize: 15.sp,
-                                        color:
-                                            context.colorScheme.onBackground)),
-                                subtitle: Text(
-                                  timeFormater.format(alarmModel.time),
-                                  style: TextStyle(
-                                      fontSize: 14.sp, color: Colors.grey),
-                                ),
-                              );
-                            },
-                          );
+                                        fontSize: 14.sp, color: Colors.grey),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          if (alarmModel.label.contains(
+                                  homeWatch.searchVal.toLowerCase()) ||
+                              timeFormater
+                                  .format(alarmModel.time)
+                                  .contains(homeWatch.searchVal)) {
+                            return OpenContainer(
+                              closedElevation: 0,
+                              openElevation: 0,
+                              openBuilder: (context, action) {
+                                return AddAlarm(
+                                  index: index,
+                                  alarmModel: alarmModel,
+                                );
+                              },
+                              closedBuilder: (context, action) {
+                                return ListTile(
+                                  tileColor:
+                                      isDarkMode ? Colors.black : Colors.white,
+                                  onTap: () {
+                                    context.pop();
+                                    ref.read(homeController).searchVal = '';
+                                    action.call();
+                                  },
+                                  title: Text(
+                                      alarmModel.label.isEmpty
+                                          ? 'Alarm'
+                                          : alarmModel.label,
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
+                                          color: context
+                                              .colorScheme.onBackground)),
+                                  subtitle: Text(
+                                    timeFormater.format(alarmModel.time),
+                                    style: TextStyle(
+                                        fontSize: 14.sp, color: Colors.grey),
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
                         },
                       );
                     }))

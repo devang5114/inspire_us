@@ -28,6 +28,7 @@ class HomeController extends ChangeNotifier {
   String get currentTime => getCurrentTime;
   TextEditingController searchController = TextEditingController();
   bool darkMode = false;
+  String searchVal = '';
 
   toggleDarkMode() {
     darkMode = !darkMode;
@@ -55,6 +56,11 @@ class HomeController extends ChangeNotifier {
       getCurrentTime = formattedTime;
       notifyListeners();
     }
+  }
+
+  onSearch(String val) {
+    searchVal = val;
+    notifyListeners();
   }
 
   @override
