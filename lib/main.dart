@@ -17,10 +17,10 @@ void main() async {
   initializeTimeZones();
   await initAwesomeNotifications();
   await Hive.initFlutter();
-  await Hive.openBox('inspireUs');
-  await Hive.openBox<AlarmModel>('alarm');
   Hive.registerAdapter(AlarmModelAdapter());
   Hive.registerAdapter(DayAdapter());
+  await Hive.openBox('inspireUs');
+  await Hive.openBox<AlarmModel>('alarm');
   runApp(const ProviderScope(child: MyApp()));
 }
 

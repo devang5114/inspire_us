@@ -79,7 +79,8 @@ class NotificationRepository {
   }
 
   Future<void> playAlarm() async {
-    await FlutterRingtonePlayer.play(fromAsset: 'assets/audio/saiyan.mp3');
+    await FlutterRingtonePlayer.play(
+        fromAsset: 'assets/audio/morning_alarm.mp3');
   }
 
   Future<void> stopAlarm() async {

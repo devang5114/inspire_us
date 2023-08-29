@@ -35,6 +35,7 @@ class _DashBoardState extends ConsumerState<DashBoard>
   void dispose() {
     close();
     tabController.dispose();
+    Hive.close();
     super.dispose();
   }
 
