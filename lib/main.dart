@@ -11,6 +11,7 @@ import 'common/config/theme/theme_export.dart';
 import 'common/model/alarm_model.dart';
 import 'common/model/day_model.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -18,13 +19,16 @@ void main() async {
   initializeTimeZones();
   await initAwesomeNotifications();
   await Hive.initFlutter();
+  await FlutterDownloader.initialize(
+    debug: true, // Set to false for production
+  );
   Hive.registerAdapter(AlarmModelAdapter());
   Hive.registerAdapter(DayAdapter());
   await Hive.openBox('inspireUs');
   await Hive.openBox<AlarmModel>('alarm');
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
-    runApp(const MyApp());
+    runApp(const ProviderScope(child: MyApp()));
   });
 }
 

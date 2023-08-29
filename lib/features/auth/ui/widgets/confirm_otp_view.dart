@@ -1,3 +1,4 @@
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
@@ -26,6 +27,13 @@ class ConfirmOtpView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                'Email Verification code has been sent to your email Address',
+                style: TextStyle(
+                  color: context.colorScheme.onBackground,
+                  fontSize: 15.sp,
+                ),
+              ).animate().fade(),
               SizedBox(height: 30.h),
               Text(
                 'Confirm Your Otp',

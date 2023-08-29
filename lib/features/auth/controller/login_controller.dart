@@ -28,7 +28,7 @@ class LoginController extends ChangeNotifier {
       notifyListeners();
       await Future.delayed(3.seconds);
       if (context.mounted) {
-        context.pushAndRemoveUntilNamed(AppRoutes.confirmOtp);
+        context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
       }
 
       loading = false;

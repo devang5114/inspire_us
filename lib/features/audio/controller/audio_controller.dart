@@ -5,4 +5,11 @@ final audioController = ChangeNotifierProvider<AudioController>((ref) {
   return AudioController();
 });
 
-class AudioController extends ChangeNotifier {}
+class AudioController extends ChangeNotifier {
+  String playBackSpeed = '1.0';
+
+  setSpeed(String val) {
+    playBackSpeed = val;
+    notifyListeners();
+  }
+}

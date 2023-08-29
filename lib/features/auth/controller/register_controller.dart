@@ -29,7 +29,7 @@ class RegisterController extends ChangeNotifier {
       await LocalDb.localDb.putValue(isLoggedInKey, true);
 
       if (context.mounted) {
-        context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
+        context.pushAndRemoveUntilNamed(AppRoutes.confirmOtp);
       }
       loading = false;
       notifyListeners();
