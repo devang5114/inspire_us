@@ -1,3 +1,5 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 
 import '../../../common/model/alarm_model.dart';
@@ -10,7 +12,13 @@ class AlarmRepository {
   // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   //     FlutterLocalNotificationsPlugin();
 
+  showAlarm(int id) {
+    NotificationRepository().showSimpleNotification();
+    NotificationRepository().playAlarm();
+  }
+
   Future<void> scheduleAlarm(AlarmModel alarmModel) async {
+    AndroidAlarmManager.oneShotAt(alarmModel.time, alarmModel.id, showAlarm);
     // print('schedule Alarm');
     // DateTime alarmTime = alarmModel.time;
     // if (alarmTime.isBefore(DateTime.now())) {

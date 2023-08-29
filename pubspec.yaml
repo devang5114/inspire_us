@@ -45,7 +45,7 @@ dependencies:
   flutter_svg:
   uuid:
   fluttertoast:
-  android_alarm_manager_plus:
+  android_alarm_manager_plus: ^3.0.2
   awesome_notifications:
   flutter_ringtone_player:
   timezone:

@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:inspire_us/common/common_repository/notification_repository.dart';
@@ -13,7 +14,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
+  await AndroidAlarmManager.initialize();
   initializeTimeZones();
   await initAwesomeNotifications();
   await Hive.initFlutter();
@@ -21,7 +22,10 @@ void main() async {
   Hive.registerAdapter(DayAdapter());
   await Hive.openBox('inspireUs');
   await Hive.openBox<AlarmModel>('alarm');
-  runApp(const ProviderScope(child: MyApp()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends ConsumerWidget {
