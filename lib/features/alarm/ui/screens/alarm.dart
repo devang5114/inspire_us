@@ -1,6 +1,7 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/features/dashboard/ui/widget/add_fab.dart';
+import 'package:just_audio/just_audio.dart';
 
 import '../../../../common/config/theme/theme_manager.dart';
 import '../widget/alarms_list.dart';
@@ -22,6 +23,7 @@ class Alarm extends ConsumerWidget {
               color: isDarkMode ? Colors.white : Colors.blueAccent,
               fontWeight: FontWeight.w600),
         ),
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.stop))],
       ),
       body: Column(
         children: [

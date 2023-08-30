@@ -38,9 +38,9 @@ class AppRouteManager {
       //           alarmModel: argument['alarmModel'], index: argument['index']),
       //       type: PageTransitionType.fade);
 
-      case AppRoutes.alarmRing:
-        return PageTransition(
-            child: const AlarmRing(), type: PageTransitionType.fade);
+      // case AppRoutes.alarmRing:
+      //   return PageTransition(
+      //       child: const AlarmRing(), type: PageTransitionType.fade);
       case AppRoutes.editProfile:
         return PageTransition(
             child: const ProfileEdit(), type: PageTransitionType.rightToLeft);

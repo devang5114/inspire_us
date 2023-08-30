@@ -1,8 +1,8 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
+import 'package:inspire_us/features/alarm/ui/screens/alarm_ring.dart';
 import 'package:timezone/data/latest_all.dart';
 import 'common/config/router/app_route_manager.dart';
 import 'common/config/router/app_routes.dart';
@@ -12,6 +12,8 @@ import 'common/model/alarm_model.dart';
 import 'common/model/day_model.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+
+import 'features/alarm/repository/alarm_repository.dart';
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +37,7 @@ void main() async {
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
+  static GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ScreenUtilInit(
@@ -42,6 +45,7 @@ class MyApp extends ConsumerWidget {
         builder: (context, child) => MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
+              navigatorKey: navigationKey,
               darkTheme: AppTheme.darkTheme,
               themeMode: ref.watch(themeModeProvider),
               onGenerateRoute: AppRouteManager.onGenerateRoute,
@@ -63,14 +67,17 @@ Future<void> initAwesomeNotifications() async {
         importance: NotificationImportance.Max,
         channelShowBadge: true)
   ]);
-  AwesomeNotifications().displayedStream.listen((notification) {
-    NotificationRepository().playAlarm();
-  });
+  // AwesomeNotifications().displayedStream.listen((notification) {
+  //   NotificationRepository().playAlarm();
+  // });
   AwesomeNotifications().actionStream.listen((action) {
     if (action.buttonKeyPressed == 'SNOOZE') {
-      NotificationRepository().stopAlarm();
-    } else {
-      NotificationRepository().stopAlarm();
+      MyApp.navigationKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) =>
+                AlarmRing(audioPath: action.body!, title: action.title ?? ''),
+          ),
+          (route) => false);
     }
   });
   print(val);

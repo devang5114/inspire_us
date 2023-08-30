@@ -100,7 +100,7 @@ class AlarmController extends ChangeNotifier {
           time: alarmTime,
           isEnable: true);
       await ref.read(alarmRepoProvider).removeSchedulerAlarm(alarmModel);
-      await ref.read(notificationRepoProvider).scheduleAlarm(alarmModel, false);
+      await ref.read(alarmRepoProvider).scheduleAlarm(alarmModel);
       await LocalDb.localDb.putAtIndex(updateAlarmIndex!, alarmModel);
     } else {
       AlarmModel alarmModel = AlarmModel(
@@ -109,7 +109,7 @@ class AlarmController extends ChangeNotifier {
           alarmSound: selectedTune,
           time: alarmTime,
           isEnable: true);
-      await ref.read(notificationRepoProvider).scheduleAlarm(alarmModel, false);
+      await ref.read(alarmRepoProvider).scheduleAlarm(alarmModel);
       await LocalDb.localDb.addAlarm(alarmModel);
     }
     context.pop();

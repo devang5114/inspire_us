@@ -1,24 +1,44 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
-
+import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:just_audio/just_audio.dart';
 import '../../../common/model/alarm_model.dart';
 
 final alarmRepoProvider = Provider<AlarmRepository>((ref) {
-  return AlarmRepository();
+  return AlarmRepository(ref);
 });
 
 class AlarmRepository {
+  AlarmRepository(this.ref);
+  Ref ref;
+
   // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   //     FlutterLocalNotificationsPlugin();
 
-  showAlarm(int id) {
-    NotificationRepository().showSimpleNotification();
-    NotificationRepository().playAlarm();
+  Future<void> scheduleAlarm(AlarmModel alarmModel) async {
+    final val = await AndroidAlarmManager.oneShotAt(
+        alarmModel.time, alarmModel.id, showAlarm,
+        exact: true, alarmClock: true, wakeup: true, allowWhileIdle: true);
+    print('val $val');
   }
 
-  Future<void> scheduleAlarm(AlarmModel alarmModel) async {
-    AndroidAlarmManager.oneShotAt(alarmModel.time, alarmModel.id, showAlarm);
+  showAlarm(int id) async {
+    AudioPlayer audioPlayer = AudioPlayer();
+    await audioPlayer.setUrl(
+        'https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3');
+    await audioPlayer.setLoopMode(LoopMode.all);
+    await NotificationRepository().showSimpleNotification();
+    await NotificationRepository().playAlarm(audioPlayer);
+  }
+
+  Future<void> scheduleAalarm(AlarmModel alarmModel) async {
+    final val = await AndroidAlarmManager.oneShotAt(
+        alarmModel.time, alarmModel.id, showAlarm,
+        exact: true, alarmClock: true, wakeup: true, allowWhileIdle: true);
+    print('val $val');
     // print('schedule Alarm');
     // DateTime alarmTime = alarmModel.time;
     // if (alarmTime.isBefore(DateTime.now())) {

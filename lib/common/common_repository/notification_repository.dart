@@ -2,6 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
+import 'package:just_audio/just_audio.dart';
 
 final notificationRepoProvider =
     Provider<NotificationRepository>((ref) => NotificationRepository());
@@ -44,7 +45,8 @@ class NotificationRepository {
               id: 1,
               channelKey: 'schedule_channel',
               title: 'Alarm ${alarmModel.time.hour} : ${alarmModel.time.hour}',
-              body: alarmModel.label,
+              body:
+                  'https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3',
               displayOnForeground: true,
               locked: true,
               notificationLayout: NotificationLayout.Default,
@@ -78,11 +80,12 @@ class NotificationRepository {
     }
   }
 
-  Future<void> playAlarm() async {
-    await FlutterRingtonePlayer.playAlarm();
+  Future<void> playAlarm(AudioPlayer audioPlayer) async {
+    await audioPlayer.play();
   }
 
-  Future<void> stopAlarm() async {
-    await FlutterRingtonePlayer.stop();
+  Future<void> stopAlarm(AudioPlayer audioPlayer) async {
+    await audioPlayer.stop();
+    // await FlutterRingtonePlayer.stop();
   }
 }
