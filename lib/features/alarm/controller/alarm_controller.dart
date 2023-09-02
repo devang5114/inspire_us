@@ -78,7 +78,6 @@ class AlarmController extends ChangeNotifier {
     selectedToneId = alarmModel.toneId;
     alarmTime = alarmModel.time;
     repeat = alarmModel.repeat;
-
     selectedTune = alarmModel.alarmSound;
     labelController.text = alarmModel.label;
   }
@@ -176,16 +175,18 @@ class AlarmController extends ChangeNotifier {
       }
     } else {
       addAlarmLoading = true;
+      final audioModel = alarmTones
+          .firstWhere((element) => element.id == selectedToneId.toString());
       notifyListeners();
       AlarmModel alarmModel = AlarmModel(
           days: days,
           label: labelController.text,
           repeat: repeat,
-          alarmSound: 'selectedTune',
+          alarmSound: audioModel.fileUrl,
           toneId: selectedToneId!,
           time: alarmTime,
           isEnable: true);
-      // await ref.read(alarmRepoProvider).scheduleAlarm(alarmModel);
+      print(alarmModel.alarmSound);
       ({int? alarmId, String? error}) result =
           await ref.read(alarmApiRepoProvider).insetAlarmRequest(alarmModel);
       if (result.alarmId != null) {
@@ -195,6 +196,7 @@ class AlarmController extends ChangeNotifier {
             backgroundColor: isDarkMode ? Colors.white : Colors.black,
             textColor: isDarkMode ? Colors.black : Colors.white);
         await LocalDb.localDb.addAlarm(alarmModel.copyWith(id: result.alarmId));
+        await scheduleAlarm(alarmModel);
       } else {
         Fluttertoast.showToast(
             msg: result.error!,

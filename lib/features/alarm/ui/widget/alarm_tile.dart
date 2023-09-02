@@ -158,18 +158,20 @@ class AlarmTile extends ConsumerWidget {
                                 ),
                                 Switch.adaptive(
                                   value: alarmModel.isEnable,
-                                  onChanged: (value) async {
-                                    final updateAlarm =
-                                        alarmModel.copyWith(isEnable: value);
-                                    final box =
-                                        Hive.box<AlarmModel>(alarmBoxKey);
-                                    await box.putAt(index, updateAlarm);
-                                    print('ee');
-                                    print(alarmModel.isEnable);
-                                    ref
-                                        .read(alarmController.notifier)
-                                        .onToggle(updateAlarm);
-                                  },
+                                  onChanged: state != NetworkState.offline
+                                      ? (value) async {
+                                          final updateAlarm = alarmModel
+                                              .copyWith(isEnable: value);
+                                          final box =
+                                              Hive.box<AlarmModel>(alarmBoxKey);
+                                          await box.putAt(index, updateAlarm);
+                                          print('ee');
+                                          print(alarmModel.isEnable);
+                                          ref
+                                              .read(alarmController.notifier)
+                                              .onToggle(updateAlarm);
+                                        }
+                                      : null,
                                 )
                               ],
                             ),

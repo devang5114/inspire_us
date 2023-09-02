@@ -11,13 +11,13 @@ class NotificationRepository {
   FlutterRingtonePlayer flutterRingtonePlayer = FlutterRingtonePlayer();
   AwesomeNotifications awesomeNotifications = AwesomeNotifications();
 
-  Future<void> showSimpleNotification() async {
+  Future<void> showAlarmNotification(String title, String time) async {
     await awesomeNotifications.createNotification(
         content: NotificationContent(
             id: 10,
             channelKey: 'schedule_channel',
-            title: 'Alarm 10:30',
-            body: 'Wake up',
+            title: 'Alarm $time',
+            body: title,
             wakeUpScreen: true,
             ticker: 'ticker',
             locked: true,
@@ -32,6 +32,7 @@ class NotificationRepository {
           NotificationActionButton(
             key: 'DISMISS',
             label: 'Dismiss',
+            buttonType: ActionButtonType.DisabledAction,
           ),
         ]);
   }
