@@ -1,5 +1,7 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/common/utils/helper/loading.dart';
+import 'package:inspire_us/common/utils/widgets/button.dart';
 import 'package:inspire_us/features/recording/controller/recording_controller.dart';
 
 import '../../../../common/config/theme/theme_manager.dart';
@@ -16,12 +18,13 @@ class _MyRecordingsState extends ConsumerState<MyRecordings> {
   @override
   void initState() {
     super.initState();
-    ref.read(recordingController.notifier).init();
+    ref.read(recordingController.notifier).initMyRecordings(context);
   }
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
+    final recordingWatch = ref.watch(recordingController);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -39,18 +42,44 @@ class _MyRecordingsState extends ConsumerState<MyRecordings> {
               fontWeight: FontWeight.w600),
         ),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-        physics: const BouncingScrollPhysics(),
-        itemCount: 7,
-        itemBuilder: (context, index) {
-          return const AudioTile(
-            title: 'Audios',
-            audioPath: 'assets/audio/sound.mp3',
-            isRecordingTile: true,
-          );
-        },
-      ),
+      body: recordingWatch.myRecordingLoading
+          ? const Loading()
+          : recordingWatch.myRecordings.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'No tones available ',
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: context.colorScheme.onBackground),
+                      ),
+                      SizedBox(height: 20.h),
+                      Button(
+                          onPressed: context.pop,
+                          backgroundColor: context.colorScheme.primary,
+                          child: Text(
+                            'Add New Tone',
+                            style:
+                                TextStyle(fontSize: 15.sp, color: Colors.white),
+                          )),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: recordingWatch.myRecordings.length,
+                  itemBuilder: (context, index) {
+                    final audioModel = recordingWatch.myRecordings
+                        .toList()
+                        .reversed
+                        .toList()[index];
+                    return AudioTile(audioModel: audioModel);
+                  },
+                ),
     );
   }
 }

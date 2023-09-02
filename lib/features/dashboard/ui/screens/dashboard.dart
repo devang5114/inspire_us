@@ -33,14 +33,8 @@ class _DashBoardState extends ConsumerState<DashBoard>
 
   @override
   void dispose() {
-    close();
     tabController.dispose();
-    Hive.close();
     super.dispose();
-  }
-
-  close() async {
-    await Hive.box('alarm').close();
   }
 
   @override
@@ -60,17 +54,13 @@ class _DashBoardState extends ConsumerState<DashBoard>
           length: 5,
           initialIndex: 2,
           child: Scaffold(
-            body: TabBarView(
-              controller: tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                const Alarm().animate().fade(),
-                const Audio().animate().fade(),
-                const Home().animate().fade(),
-                const Recording().animate().fade(),
-                const Profile().animate().fade(),
-              ],
-            ),
+            body: [
+              const Alarm().animate().fade(),
+              const Audio().animate().fade(),
+              const Home().animate().fade(),
+              const Recording().animate().fade(),
+              const Profile().animate().fade(),
+            ][dashBoardWatch.index],
             bottomNavigationBar: BottomNavBar(tabController),
           ),
         ),

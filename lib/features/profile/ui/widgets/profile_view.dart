@@ -1,6 +1,9 @@
 import 'package:inspire_us/common/config/router/app_routes.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/constants/app_assets.dart';
+import 'package:inspire_us/common/utils/constants/app_const.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/features/profile/controller/profile_controller.dart';
 import 'package:inspire_us/features/profile/ui/widgets/user_details.dart';
 
 import '../../../../common/config/theme/theme_manager.dart';
@@ -11,7 +14,7 @@ class ProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
-
+    final profileWatch = ref.watch(profileController);
     return SingleChildScrollView(
       padding: EdgeInsets.only(top: 30.h),
       child: Column(
@@ -22,10 +25,10 @@ class ProfileView extends ConsumerWidget {
             backgroundColor:
                 context.colorScheme.primary.withOpacity(isDarkMode ? 0.5 : .2),
             child: CircleAvatar(
-              radius: 70.r,
-              backgroundImage: const NetworkImage(
-                  'https://t3.ftcdn.net/jpg/02/99/04/20/360_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg'),
-            ),
+                radius: 70.r,
+                backgroundImage: NetworkImage(
+                  profileWatch.user!.imgUrl,
+                )),
           ),
           SizedBox(height: 30.h),
           Padding(
@@ -34,7 +37,7 @@ class ProfileView extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Contacts',
+                  'Details',
                   style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,

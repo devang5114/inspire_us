@@ -38,33 +38,43 @@ class RegisterView extends ConsumerWidget {
                 padding: EdgeInsets.only(bottom: 10.h),
                 hintText: 'Name',
                 validator: nameValidator,
+                autoValidateMode: AutovalidateMode.onUserInteraction,
                 prefixIcon: Icon(
                   Icons.person,
                   size: 23.h,
                   color: isDarkMode ? Colors.white : Colors.grey,
                 ),
+                onChange: (val) {
+                  ref.read(registerController.notifier).name = val;
+                },
               ),
               SizedBox(height: 20.h),
               MyTextInput(
-                  padding: EdgeInsets.only(bottom: 10.h),
-                  hintText: 'Email',
-                  keyboardType: TextInputType.emailAddress,
-                  validator: emailValidator,
-                  prefixIcon: IconButton(
-                    onPressed: null,
-                    icon: Text(
-                      '@',
-                      style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.grey,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    color: Colors.grey,
-                  )),
+                padding: EdgeInsets.only(bottom: 10.h),
+                hintText: 'Email',
+                keyboardType: TextInputType.emailAddress,
+                autoValidateMode: AutovalidateMode.onUserInteraction,
+                validator: emailValidator,
+                prefixIcon: IconButton(
+                  onPressed: null,
+                  icon: Text(
+                    '@',
+                    style: TextStyle(
+                        color: isDarkMode ? Colors.white : Colors.grey,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  color: Colors.grey,
+                ),
+                onChange: (val) {
+                  ref.read(registerController.notifier).email = val;
+                },
+              ),
               SizedBox(height: 20.h),
               MyTextInput(
                 padding: EdgeInsets.only(bottom: 10.h),
                 obscureText: registerWatch.obsecure,
+                autoValidateMode: AutovalidateMode.onUserInteraction,
                 suffixIcon: obsecureIcon(ref, context),
                 hintText: 'Password',
                 validator: passValidator,
@@ -73,6 +83,9 @@ class RegisterView extends ConsumerWidget {
                   size: 23.h,
                   color: isDarkMode ? Colors.white : Colors.grey,
                 ),
+                onChange: (val) {
+                  ref.read(registerController.notifier).password = val;
+                },
               ),
               SizedBox(height: 30.h),
               const RegisterButton(),

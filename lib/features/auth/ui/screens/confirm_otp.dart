@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/features/auth/controller/register_controller.dart';
 
 import '../../../../common/utils/widgets/busy_overlay.dart';
 import '../../../../common/utils/widgets/button.dart';
@@ -9,11 +11,12 @@ import '../widgets/confirm_otp_view.dart';
 import '../widgets/login/login_view.dart';
 
 class ConfirmOtp extends ConsumerWidget {
-  const ConfirmOtp({super.key});
+  const ConfirmOtp({required this.otpType, super.key});
+  final OtpType otpType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginWatch = ref.watch(loginController);
+    final registerWatch = ref.watch(registerController);
     // final isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -22,7 +25,7 @@ class ConfirmOtp extends ConsumerWidget {
         statusBarIconBrightness: Brightness.light,
       ),
       child: BusyOverlay(
-        show: loginWatch.loading,
+        show: registerWatch.loading,
         child: GestureDetector(
           onTap: () => context.focusScope.unfocus(),
           child: Scaffold(
@@ -41,7 +44,9 @@ class ConfirmOtp extends ConsumerWidget {
                         fontWeight: FontWeight.w600),
                   ),
                 ),
-                const ConfirmOtpView()
+                ConfirmOtpView(
+                  otpType: otpType,
+                )
               ],
             ),
             floatingActionButtonLocation:
@@ -52,7 +57,11 @@ class ConfirmOtp extends ConsumerWidget {
                 backgroundColor: context.colorScheme.primary,
                 borderRadius: BorderRadius.circular(30.r),
                 onPressed: () {
-                  ref.read(loginController).verifyOtp(context);
+                  if (otpType == OtpType.emailVerify) {
+                    ref.read(registerController).verifyOtp(context);
+                  } else {
+                    ref.read(loginController).verifyOtp(context);
+                  }
                 },
                 child: Text(
                   'Confirm'.toUpperCase(),

@@ -3,7 +3,8 @@ import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
-import '../../../alarm/controller/alarm_controller.dart';
+import '../../../../common/utils/constants/repeat_enum.dart';
+import '../../controller/alarm_controller.dart';
 
 class AlarmDaySelector extends ConsumerWidget {
   const AlarmDaySelector({super.key});
@@ -27,12 +28,18 @@ class AlarmDaySelector extends ConsumerWidget {
                 shape: CircleBorder(
                     side: BorderSide(color: Colors.grey.withOpacity(.1))),
                 backgroundColor:
-                    isDarkMode ? Colors.white : Colors.white.withOpacity(.7),
-                selectedColor: context.colorScheme.primary,
+                    isDarkMode ? Colors.blueGrey.shade700 : Colors.white,
+                selectedColor: isDarkMode ? Colors.white : Colors.blueAccent,
                 label: Text(
                   day.name,
                   style: TextStyle(
-                      color: day.isEnable ? Colors.white : Colors.black),
+                      color: day.isEnable
+                          ? isDarkMode
+                              ? Colors.black
+                              : Colors.white
+                          : isDarkMode
+                              ? Colors.white
+                              : Colors.black),
                 ),
                 selected: day.isEnable,
                 onSelected: (value) {
@@ -49,7 +56,7 @@ class AlarmDaySelector extends ConsumerWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: DropdownButtonFormField(
-              value: ref.watch(alarmController).repeat.name,
+              value: alarmWatch.repeat.name,
               decoration: InputDecoration(
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
@@ -58,7 +65,13 @@ class AlarmDaySelector extends ConsumerWidget {
                   )),
               items: [
                 DropdownMenuItem(
-                    value: 'dayWise',
+                    value: Repeat.once.name,
+                    child: Text('Once',
+                        style: TextStyle(
+                            fontSize: 15.sp,
+                            color: context.colorScheme.onBackground))),
+                DropdownMenuItem(
+                    value: Repeat.days.name,
                     child: Text(
                       'Day wise',
                       style: TextStyle(
@@ -66,26 +79,32 @@ class AlarmDaySelector extends ConsumerWidget {
                           color: context.colorScheme.onBackground),
                     )),
                 DropdownMenuItem(
-                    value: 'once',
-                    child: Text('Once',
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: context.colorScheme.onBackground))),
+                    value: Repeat.everyDay.name,
+                    child: Text(
+                      'Every day',
+                      style: TextStyle(
+                          fontSize: 15.sp,
+                          color: context.colorScheme.onBackground),
+                    )),
               ],
               onChanged: (val) {
-                print(val);
+                // print(val);
 
-                if (val == 'once') {
-                  print(val);
+                if (val == Repeat.once.name) {
+                  // print(val);
                   ref.read(alarmController.notifier).setRepeat(Repeat.once);
-                } else if (val == 'dayWise') {
-                  ref.read(alarmController.notifier).setRepeat(Repeat.dayWise);
+                } else if (val == Repeat.days.name) {
+                  ref.read(alarmController.notifier).setRepeat(Repeat.days);
+                } else if (val == Repeat.everyDay.name) {
+                  ref.read(alarmController.notifier).setRepeat(Repeat.everyDay);
                 }
               }),
         ),
         Visibility(
-          visible: ref.watch(alarmController).repeat == Repeat.dayWise,
-          child: alarmDays,
+          visible: ref.watch(alarmController).repeat == Repeat.days,
+          child: Container(
+              margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 0),
+              child: alarmDays),
         )
       ],
     );

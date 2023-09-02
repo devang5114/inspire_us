@@ -5,7 +5,7 @@ import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/widgets/text_input.dart';
-import 'package:inspire_us/features/alarm/ui/alarm_tile.dart';
+import 'package:inspire_us/features/alarm/ui/widget/alarm_tile.dart';
 import 'package:inspire_us/features/alarm/ui/screens/add_alarm.dart';
 import 'package:inspire_us/features/home/controller/home_controller.dart';
 import 'package:intl/intl.dart';

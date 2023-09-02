@@ -1,13 +1,13 @@
 import 'package:animations/animations.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:hive/hive.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
-import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
-import 'package:inspire_us/features/alarm/ui/widget/alarms_list.dart';
 import 'package:inspire_us/features/home/controller/home_controller.dart';
 import 'package:inspire_us/features/home/ui/screens/search_screen.dart';
+
+import '../../../../common/utils/helper/network_state_helper.dart';
+import '../../../alarm/ui/widget/alarm_list.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -19,6 +19,7 @@ class HomeView extends ConsumerWidget {
     bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
     return Column(
       children: [
+        const WarningWidgetValueNotifier(),
         OpenContainer(
           closedColor: Colors.transparent,
           closedElevation: 0,
@@ -80,8 +81,10 @@ class HomeView extends ConsumerWidget {
                 : CircularProgressIndicator(
                     color: context.colorScheme.primary,
                   )),
-        const AlarmList(
-          isHomePage: true,
+        Expanded(
+          child: const AlarmList(
+            isHomePage: true,
+          ),
         )
       ],
     );

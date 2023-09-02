@@ -1,8 +1,11 @@
 import 'package:animations/animations.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
 
 import '../../../../common/common_repository/notification_repository.dart';
 import '../../../alarm/controller/alarm_controller.dart';
@@ -24,9 +27,13 @@ class AddFab extends ConsumerWidget {
           shape: const CircleBorder(),
           onPressed: () async {
             // ref.read(notificationRepoProvider).showSimpleNotification();
-
-            ref.read(alarmController.notifier).alarmTime = DateTime.now();
-            action.call();
+            print(ref.watch(networkStateProvider));
+            if (ref.watch(networkStateProvider) == NetworkState.online) {
+              ref.read(alarmController.notifier).alarmTime = DateTime.now();
+              action.call();
+            } else {
+              Fluttertoast.showToast(msg: 'You are offline');
+            }
           },
           child: const Icon(Icons.alarm_add_outlined),
         );

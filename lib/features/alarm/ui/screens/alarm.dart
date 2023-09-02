@@ -1,18 +1,31 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/constants/enums.dart';
+import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
+import 'package:inspire_us/features/alarm/controller/alarm_controller.dart';
+import 'package:inspire_us/features/alarm/ui/widget/alarm_list.dart';
 import 'package:inspire_us/features/dashboard/ui/widget/add_fab.dart';
 import 'package:just_audio/just_audio.dart';
-
 import '../../../../common/config/theme/theme_manager.dart';
-import '../widget/alarms_list.dart';
 
-class Alarm extends ConsumerWidget {
+class Alarm extends ConsumerStatefulWidget {
   const Alarm({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
+  ConsumerState<Alarm> createState() => _AlarmState();
+}
 
+class _AlarmState extends ConsumerState<Alarm> {
+  @override
+  void initState() {
+    super.initState();
+    // ref.read(alarmController.notifier).init(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
+    bool isOnline = ref.watch(networkStateProvider) == NetworkState.online;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -23,12 +36,11 @@ class Alarm extends ConsumerWidget {
               color: isDarkMode ? Colors.white : Colors.blueAccent,
               fontWeight: FontWeight.w600),
         ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.stop))],
       ),
-      body: Column(
+      body: const Column(
         children: [
-          const AlarmList(),
-          SizedBox(height: 10.h),
+          WarningWidgetValueNotifier(),
+          Expanded(child: AlarmList()),
         ],
       ),
       floatingActionButton: const AddFab(),

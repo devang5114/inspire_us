@@ -1,9 +1,18 @@
-String? nameValidator(String? input, {bool isOtp = false}) {
+String? nameValidator(String? input) {
   if (input == null || input.trim().length < 2) {
-    return '${isOtp ? 'Otp' : 'Name'} must be 2 characters long';
+    return 'Name must be 2 characters long';
   } else {
     return null;
   }
+}
+
+String? otpValidator(String? input, int otp) {
+  if (input != null && input.isEmpty) {
+    return 'Please Enter your Otp Number';
+  } else if (input != otp.toString()) {
+    return 'Invalid Otp';
+  }
+  return null;
 }
 
 String? emailValidator(String? input) {
@@ -21,4 +30,13 @@ String? passValidator(String? input) {
   } else {
     return null;
   }
+}
+
+String? confirmPassValidator(String? input, String password) {
+  if (input == null || input.trim().length < 8) {
+    return 'Password must be 8 characters long';
+  } else if (input != password) {
+    return "password doesn't match";
+  }
+  return null;
 }

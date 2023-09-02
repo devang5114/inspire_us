@@ -1,5 +1,6 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
 
 import '../../../../../common/config/theme/theme_manager.dart';
 import '../../../../../common/utils/widgets/text_input.dart';
@@ -37,6 +38,7 @@ class LoginView extends ConsumerWidget {
               MyTextInput(
                 padding: EdgeInsets.only(bottom: 10.h),
                 hintText: 'Email',
+                autoValidateMode: AutovalidateMode.onUserInteraction,
                 validator: emailValidator,
                 keyboardType: TextInputType.emailAddress,
                 prefixIcon: Icon(
@@ -44,12 +46,19 @@ class LoginView extends ConsumerWidget {
                   size: 23.h,
                   color: isDarkMode ? Colors.white : Colors.grey,
                 ),
+                onChange: (val) {
+                  ref.read(loginController.notifier).email = val;
+                },
               ),
               SizedBox(height: 20.h),
               MyTextInput(
                 obscureText: loginWatch.obsecure,
                 padding: EdgeInsets.only(bottom: 10.h),
                 hintText: 'Password',
+                autoValidateMode: AutovalidateMode.onUserInteraction,
+                onChange: (val) {
+                  ref.read(loginController.notifier).password = val;
+                },
                 suffixIcon: obsecureIcon(ref),
                 validator: passValidator,
                 prefixIcon: Icon(

@@ -8,7 +8,7 @@ class MyTextInput extends ConsumerWidget {
       {super.key,
       this.label,
       this.obscureText = false,
-      this.autoValidateMode = false,
+      this.autoValidateMode,
       this.validator,
       this.suffixIcon,
       this.keyboardType,
@@ -24,7 +24,7 @@ class MyTextInput extends ConsumerWidget {
 
   final String? label;
   final String? hintText;
-  final bool autoValidateMode;
+  final AutovalidateMode? autoValidateMode;
   final bool obscureText;
   final bool borderInputNone;
   final Widget? suffixIcon;
@@ -47,9 +47,7 @@ class MyTextInput extends ConsumerWidget {
       focusNode: focusNode,
       keyboardType: keyboardType,
       obscureText: obscureText,
-      autovalidateMode: autoValidateMode
-          ? AutovalidateMode.always
-          : AutovalidateMode.disabled,
+      autovalidateMode: autoValidateMode,
       style:
           TextStyle(fontSize: 16.sp, color: context.colorScheme.onBackground),
       cursorColor: isDarkMode ? Colors.white : Colors.blueAccent,

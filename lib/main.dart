@@ -2,6 +2,7 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
+import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
 import 'package:inspire_us/features/alarm/ui/screens/alarm_ring.dart';
 import 'package:timezone/data/latest_all.dart';
 import 'common/config/router/app_route_manager.dart';
@@ -13,21 +14,20 @@ import 'common/model/day_model.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
+import 'common/utils/helper/network_state_helper.dart';
 import 'features/alarm/repository/alarm_repository.dart';
+
+final internetChecker = CheckInternetConnection();
 
 void main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await AndroidAlarmManager.initialize();
   initializeTimeZones();
   await initAwesomeNotifications();
-  await Hive.initFlutter();
+  await LocalDb.localDb.init();
   await FlutterDownloader.initialize(
     debug: true, // Set to false for production
   );
-  Hive.registerAdapter(AlarmModelAdapter());
-  Hive.registerAdapter(DayAdapter());
-  await Hive.openBox('inspireUs');
-  await Hive.openBox<AlarmModel>('alarm');
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(const ProviderScope(child: MyApp()));

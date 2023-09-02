@@ -18,10 +18,9 @@ class SplashController extends ChangeNotifier {
   init(BuildContext context) async {
     await Future.delayed(2.seconds);
     await setTheme();
-    final isLoggedIn =
-        await LocalDb.localDb.getValue(isLoggedInKey, defaultValue: false);
+    final userToken = await LocalDb.localDb.getValue(authTokenKey);
 
-    if (isLoggedIn) {
+    if (userToken != null) {
       if (context.mounted) {
         context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
       }

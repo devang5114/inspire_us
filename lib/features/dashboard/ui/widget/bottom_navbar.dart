@@ -2,6 +2,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/constants/app_assets.dart';
+import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
 
 import '../../controller/dashboard_controller.dart';
 

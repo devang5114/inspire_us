@@ -25,13 +25,12 @@ class AudioProgressBar extends ConsumerWidget {
             timeLabelTextStyle: TextStyle(
               color: isDarkMode ? Colors.white : Colors.black,
             ),
-            baseBarColor:
-                isDarkMode ? Colors.lightBlueAccent : Colors.blueAccent,
-            thumbColor: isDarkMode ? Colors.lightBlueAccent : Colors.blueAccent,
+            baseBarColor: isDarkMode ? Colors.blueAccent : Colors.blueAccent,
+            thumbColor: isDarkMode ? Colors.blueAccent : Colors.blueAccent,
             thumbGlowColor:
                 isDarkMode ? Colors.white.withOpacity(.5) : Colors.blueAccent,
             progressBarColor:
-                isDarkMode ? Colors.lightBlueAccent : Colors.blueAccent,
+                isDarkMode ? Colors.blueAccent : Colors.blueAccent,
             progress: positionData?.position ?? Duration.zero,
             buffered: positionData?.bufferedPosition ?? Duration.zero,
             total: positionData?.duration ?? Duration.zero,

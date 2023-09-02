@@ -1,6 +1,7 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:inspire_us/features/auth/controller/login_controller.dart';
 import 'package:inspire_us/features/dashboard/controller/dashboard_controller.dart';
 
 import '../../../../common/config/router/app_routes.dart';
@@ -117,8 +118,7 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
           ),
           ListTile(
             onTap: () {
-              LocalDb.localDb.putValue(isLoggedInKey, false);
-              context.pushAndRemoveUntilNamed(AppRoutes.login);
+              ref.read(loginController.notifier).logOut(context);
             },
             leading: Icon(
               Icons.logout_outlined,

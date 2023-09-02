@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
+import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/features/alarm/ui/screens/add_alarm.dart';
+import 'package:inspire_us/features/auth/ui/screens/change_password.dart';
 import 'package:inspire_us/features/auth/ui/screens/confirm_otp.dart';
+import 'package:inspire_us/features/auth/ui/screens/forget_password.dart';
 import 'package:inspire_us/features/profile/ui/screens/profile_edit.dart';
 import 'package:inspire_us/features/recording/ui/screens/my_recordings.dart';
 import 'package:page_transition/page_transition.dart';
@@ -22,12 +25,15 @@ class AppRouteManager {
       case AppRoutes.register:
         return PageTransition(
             child: const Register(), type: PageTransitionType.fade);
-      case AppRoutes.confirmOtp:
-        return PageTransition(
-            child: const ConfirmOtp(), type: PageTransitionType.fade);
       case AppRoutes.login:
         return PageTransition(
             child: const Login(), type: PageTransitionType.fade);
+      case AppRoutes.forgetPassWord:
+        return PageTransition(
+            child: const ForgetPassword(), type: PageTransitionType.fade);
+      case AppRoutes.changePassword:
+        return PageTransition(
+            child: const ChangePassword(), type: PageTransitionType.fade);
 
       case AppRoutes.dashboard:
         return PageTransition(

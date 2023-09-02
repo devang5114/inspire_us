@@ -34,7 +34,7 @@ class AlarmRepository {
     await NotificationRepository().playAlarm(audioPlayer);
   }
 
-  Future<void> scheduleAalarm(AlarmModel alarmModel) async {
+  Future<void> scheduldeAalarm(AlarmModel alarmModel) async {
     final val = await AndroidAlarmManager.oneShotAt(
         alarmModel.time, alarmModel.id, showAlarm,
         exact: true, alarmClock: true, wakeup: true, allowWhileIdle: true);
@@ -132,7 +132,7 @@ class AlarmRepository {
     if (alarmModel.isEnable) {
       await removeSchedulerAlarm(alarmModel);
     } else {
-      await scheduleAlarm(alarmModel);
+      // await scheduleAalarm(alarmModel);
     }
   }
 

@@ -2,6 +2,8 @@ import 'package:inspire_us/common/config/router/app_routes.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
+import 'package:inspire_us/common/utils/helper/loading.dart';
+import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
 
 import '../../controller/recording_controller.dart';
 import '../widgets/recording_view.dart';
@@ -21,8 +23,15 @@ class _RecordingState extends ConsumerState<Recording> {
   }
 
   @override
+  void dispose() {
+    print('dispose');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
+    final recordingWatch = ref.watch(recordingController);
     return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -41,6 +50,12 @@ class _RecordingState extends ConsumerState<Recording> {
                 ))
           ],
         ),
-        body: const DefaultTabController(length: 2, child: RecordingView()));
+        body: const Column(
+          children: [
+            WarningWidgetValueNotifier(),
+            Expanded(
+                child: DefaultTabController(length: 2, child: RecordingView())),
+          ],
+        ));
   }
 }

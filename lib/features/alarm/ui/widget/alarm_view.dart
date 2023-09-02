@@ -1,7 +1,8 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/widgets/text_input.dart';
-import 'package:inspire_us/features/audio/ui/widgets/alarm_day_selector.dart';
+import 'package:inspire_us/features/alarm/ui/widget/alarm_day_selector.dart';
+import 'package:inspire_us/features/dashboard/controller/dashboard_controller.dart';
 
 import '../../../../common/config/theme/theme_manager.dart';
 import '../../../../common/utils/widgets/button.dart';
@@ -54,22 +55,23 @@ class AlarmView extends ConsumerWidget {
       ),
       SizedBox(height: 10.h),
       const AlarmDaySelector(),
-      SizedBox(height: 10.h),
+      SizedBox(height: 15.h),
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Alarm sound',
+              'Alarm Tone',
               style: TextStyle(
                   fontSize: 15.sp,
                   color: context.colorScheme.onBackground,
                   fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 10.h),
-            DropdownButtonFormField(
-                value: ref.watch(alarmController).selectedTune,
+            if (alarmWatch.alarmTones.isNotEmpty)
+              DropdownButtonFormField(
+                value: alarmWatch.selectedToneId.toString(),
                 decoration: InputDecoration(
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
@@ -83,35 +85,50 @@ class AlarmView extends ConsumerWidget {
                         borderSide: BorderSide(
                           color: context.colorScheme.onBackground,
                         ))),
-                items: [
-                  DropdownMenuItem(
-                      value: 'Wake up to reality',
+                items: List.generate(alarmWatch.alarmTones.length, (index) {
+                  final audio = alarmWatch.alarmTones[index];
+                  return DropdownMenuItem(
+                      value: audio.id,
                       child: Text(
-                        'Wake up to reality',
+                        audio.title,
                         style: TextStyle(
                             fontSize: 15.sp,
                             color: context.colorScheme.onBackground),
-                      )),
-                  DropdownMenuItem(
-                      value: 'Morning tune',
-                      child: Text(
-                        'Morning tune',
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: context.colorScheme.onBackground),
-                      )),
-                  DropdownMenuItem(
-                      value: 'Tune 1',
-                      child: Text(
-                        'Tune 1',
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: context.colorScheme.onBackground),
-                      )),
-                ],
-                onChanged: (val) {
-                  ref.read(alarmController.notifier).selectedTune = val!;
+                      ));
                 }),
+                onChanged: (val) {
+                  ref.read(alarmController.notifier).selectedToneId =
+                      int.parse(val!.toString());
+                  print(alarmWatch.selectedToneId);
+                },
+              )
+            else
+              Align(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 10.h),
+                    Text(
+                      'No tones available ',
+                      style: TextStyle(
+                          fontSize: 15.sp,
+                          color: context.colorScheme.onBackground),
+                    ),
+                    SizedBox(height: 5.h),
+                    TextButton(
+                        onPressed: () {
+                          context.pop();
+                          ref.read(dashboardController.notifier).setPage(3);
+                        },
+                        child: Text(
+                          'Add New Tone',
+                          style: TextStyle(
+                              fontSize: 15.sp, color: Colors.blueAccent),
+                        )),
+                  ],
+                ),
+              ),
             SizedBox(height: 20.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -142,10 +159,9 @@ class AlarmView extends ConsumerWidget {
                       'Ok',
                       style: TextStyle(color: Colors.white),
                     ),
-                    onPressed: () async {
-                      await ref
-                          .read(alarmController.notifier)
-                          .setAlarm(context);
+                    onPressed: () {
+                      ref.read(alarmController.notifier).setAlarm(context);
+                      context.pop();
                       ref.read(alarmController.notifier).reset();
                     }),
               ],
