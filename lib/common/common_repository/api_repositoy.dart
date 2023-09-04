@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/model/api_response.dart';
 import 'package:inspire_us/common/utils/constants/app_const.dart';
@@ -137,6 +136,15 @@ class ApiRepository {
       } else {
         return ApiResponse(error: 'Somthing went wrong');
       }
+    }
+  }
+
+  downloadAudioFile(String audioUrl, String path) async {
+    try {
+      final response = await dio.download(audioUrl, path);
+      print(response.data);
+    } on DioException catch (e) {
+      print(e.message);
     }
   }
 }

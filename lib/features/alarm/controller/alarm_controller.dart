@@ -1,21 +1,13 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hive/hive.dart';
-import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:inspire_us/common/utils/constants/app_const.dart';
-import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/features/alarm/repository/alarm_api_reposioty.dart';
 import 'package:inspire_us/features/recording/repository/recording_repository.dart';
-
 import '../../../common/model/audio_model.dart';
 import '../../../common/model/day_model.dart';
-import '../../../common/utils/constants/enums.dart';
 import '../../../common/utils/constants/repeat_enum.dart';
 import '../../../common/utils/helper/local_database_helper.dart';
 import '../repository/alarm_repository.dart';
@@ -52,20 +44,6 @@ class AlarmController extends ChangeNotifier {
   bool addAlarmLoading = false;
   bool isDarkMode = false;
   bool loading = false;
-
-  // init(BuildContext context) async {
-  //   loading = true;
-  //   ({List<Alarm>? alarmList, String? error}) result =
-  //       await ref.read(alarmApiRepoProvider).getUserAlarms();
-  //   if (result.alarmList != null) {
-  //     alarms = result.alarmList!;
-  //   } else {
-  //     Fluttertoast.showToast(
-  //         msg: result.error!,
-  //         backgroundColor: isDarkMode ? Colors.white : Colors.black,
-  //         textColor: isDarkMode ? Colors.black : Colors.white);
-  //   }
-  // }
 
   update(AlarmModel alarmModel, int index) {
     print(index);
@@ -175,6 +153,7 @@ class AlarmController extends ChangeNotifier {
       }
     } else {
       addAlarmLoading = true;
+
       final audioModel = alarmTones
           .firstWhere((element) => element.id == selectedToneId.toString());
       notifyListeners();
@@ -187,6 +166,7 @@ class AlarmController extends ChangeNotifier {
           time: alarmTime,
           isEnable: true);
       print(alarmModel.alarmSound);
+
       ({int? alarmId, String? error}) result =
           await ref.read(alarmApiRepoProvider).insetAlarmRequest(alarmModel);
       if (result.alarmId != null) {
@@ -196,7 +176,8 @@ class AlarmController extends ChangeNotifier {
             backgroundColor: isDarkMode ? Colors.white : Colors.black,
             textColor: isDarkMode ? Colors.black : Colors.white);
         await LocalDb.localDb.addAlarm(alarmModel.copyWith(id: result.alarmId));
-        await scheduleAlarm(alarmModel);
+
+        scheduleAlarm(alarmModel);
       } else {
         Fluttertoast.showToast(
             msg: result.error!,

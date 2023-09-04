@@ -1,50 +1,102 @@
+import 'dart:async';
+
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
-import 'package:inspire_us/common/utils/constants/app_const.dart';
-import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
-import '../../../common/model/alarm_model.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../common/model/alarm_model.dart';
 
 final alarmRepoProvider = Provider<AlarmRepository>((ref) {
   return AlarmRepository(ref);
 });
 
 Future<void> scheduleAlarm(AlarmModel alarmModel) async {
+  // if (alarmModel.days.any((day) => day.isEnable)) {
+  //   final formater = DateFormat('hh:mm a');
+  //
+  //   for (int i = 0; i < alarmModel.days.length; i++) {
+  //     final day = alarmModel.days[i];
+  //
+  //     if (day.isEnable) {
+  //       // Calculate the time for this specific day
+  //       final DateTime alarmTime = DateTime(
+  //         alarmModel.time.year,
+  //         alarmModel.time.month,
+  //         alarmModel.time.day + i, // Add 'i' days to the alarm time
+  //         alarmModel.time.hour,
+  //         alarmModel.time.minute,
+  //       );
+  //
+  //       final val = await AndroidAlarmManager.oneShotAt(
+  //         alarmTime,
+  //         alarmModel.toneId,
+  //         showAlarm,
+  //         params: {
+  //           'id': alarmModel.toneId,
+  //           'title': alarmModel.label,
+  //           'time': formater.format(alarmTime)
+  //         },
+  //         exact: true,
+  //         alarmClock: true,
+  //         wakeup: true,
+  //         allowWhileIdle: true,
+  //       );
+  //
+  //       print(
+  //           'Scheduled alarm for ${day.name} at ${formater.format(alarmTime)}: val $val');
+  //     }
+  //   }
+  // } else {
   final formater = DateFormat('hh:mm a');
-
   final val = await AndroidAlarmManager.oneShotAt(
-      alarmModel.time, alarmModel.id, showAlarm,
+      alarmModel.time, alarmModel.toneId, showAlarm,
       params: {
-        'tune': alarmModel.alarmSound,
+        'id': alarmModel.toneId,
         'title': alarmModel.label,
         'time': formater.format(alarmModel.time)
       },
       exact: true,
+      rescheduleOnReboot: true,
       alarmClock: true,
       wakeup: true,
       allowWhileIdle: true);
   print('val $val');
+  // }
 }
 
 showAlarm(int id, Map<String, dynamic> params) async {
-  AudioPlayer audioPlayer = AudioPlayer();
-  await audioPlayer.setUrl(params['tune']);
-  await audioPlayer.setLoopMode(LoopMode.all);
-  await NotificationRepository()
-      .showAlarmNotification(params['title'], params['time']);
-  await NotificationRepository().playAlarm(audioPlayer);
-  AwesomeNotifications().actionStream.listen((event) {
-    if (event.buttonKeyPressed == 'SNOOZE') {
-      print('hii from bg');
-      NotificationRepository().stopAlarm(audioPlayer);
-    }
-  });
+  await playAlarm(params['id']);
+  await showNotification(params['title'], params['time']);
+
+  // AwesomeNotifications().actionStream.listen((event) {
+  //   if (event.buttonKeyPressed == 'DISMISS') {
+  //     // NotificationRepository().stopAlarm(audioPlayer);
+  //   }
+  // });
+}
+
+playAlarm(int id) async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  final path = pref.getString(id.toString());
+  print('null');
+  if (path != null) {
+    print('not null');
+
+    AudioPlayer audioPlayer = AudioPlayer()..setFilePath(path);
+    audioPlayer.setLoopMode(LoopMode.all);
+    audioPlayer.play();
+    pref.setString('playingTune', path);
+  }
+}
+
+showNotification(String title, String time) async {
+  await NotificationRepository().showAlarmNotification(title, time);
 }
 
 class AlarmRepository {

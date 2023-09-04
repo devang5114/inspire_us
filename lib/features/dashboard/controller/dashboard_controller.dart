@@ -1,7 +1,15 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../common/model/audio_model.dart';
+import '../../recording/repository/recording_repository.dart';
 
 final dashboardController = ChangeNotifierProvider<DashboardController>((ref) {
   return DashboardController(ref);
@@ -13,8 +21,53 @@ class DashboardController extends ChangeNotifier {
   Ref ref;
   int index = 2;
 
-  init(TabController val) async {
+  init(TabController val, BuildContext context) async {
     tabController = val;
+    getUserRecordings(context);
+  }
+
+  getUserRecordings(BuildContext context) async {
+    ({List<AudioModel>? audioList, String? error}) result =
+        await ref.read(recordingRepoProvider).getUserRecording();
+    if (result.audioList != null) {
+      for (var audio in result.audioList!) {
+        downloadAndStorePath(audio);
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: result.error!,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        gravity: ToastGravity.CENTER,
+      );
+    }
+  }
+
+  downloadAndStorePath(AudioModel audioModel) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    Dio dio = Dio();
+    final path = await _getSavePath(audioModel.id);
+
+    try {
+      if (!(pref.containsKey(audioModel.id))) {
+        final result = await dio.download(audioModel.fileUrl, path);
+        print('Audio downloaded successfully to $path');
+        saveToLocalStorage(audioModel.id, path);
+      }
+    } on DioException catch (e) {
+      print(e.error);
+      print(e.message);
+    }
+  }
+
+  saveToLocalStorage(String id, String path) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString(id, path);
+  }
+
+  Future<String> _getSavePath(String id) async {
+    final appDir = await getApplicationDocumentsDirectory();
+    return '${appDir.path}/$id.mp3';
   }
 
   setPage(int i) {

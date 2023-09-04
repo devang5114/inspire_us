@@ -37,6 +37,10 @@ class LocalDb {
     await alarmBox!.putAt(index, alarmModel);
   }
 
+  bool inspireBoxContainKey(String key) {
+    return inspireUsBox!.containsKey(key);
+  }
+
   ValueListenable<Box<AlarmModel>> get alarmBoxListenable =>
       alarmBox!.listenable();
 }

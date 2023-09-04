@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:hive/hive.dart';
-import 'package:inspire_us/common/utils/constants/enums.dart';
 
 import '../utils/constants/repeat_enum.dart';
 import 'day_model.dart';

@@ -222,20 +222,21 @@ class _AudioTileState extends ConsumerState<AudioTile>
                       style: TextStyle(
                           fontSize: 14.sp,
                           color: context.colorScheme.onSurface)),
-                  PopupMenuButton(
-                    padding: EdgeInsets.zero,
-                    enableFeedback: false,
-                    enabled: true,
-                    position: PopupMenuPosition.under,
-                    icon: Icon(Icons.info_outline),
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        child: Text(
-                            'Created At ${DateFormat('hh:mm   yy/mm/dd').format(widget.globalAudioModel!.createdAt)}'),
-                        value: 'info',
-                      )
-                    ],
-                  ),
+                  if (!isAudioModel)
+                    PopupMenuButton(
+                      padding: EdgeInsets.zero,
+                      enableFeedback: false,
+                      enabled: true,
+                      position: PopupMenuPosition.under,
+                      icon: Icon(Icons.info_outline),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Text(
+                              'Created At ${DateFormat('hh:mm   yy/mm/dd').format(widget.globalAudioModel!.createdAt)}'),
+                          value: 'info',
+                        )
+                      ],
+                    ),
                 ],
               ),
               // if (!isAudioModel)

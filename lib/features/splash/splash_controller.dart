@@ -4,6 +4,8 @@ import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:inspire_us/features/alarm/ui/screens/alarm_ring.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/utils/constants/app_const.dart';
 
@@ -16,14 +18,14 @@ class SplashController extends ChangeNotifier {
   Ref ref;
 
   init(BuildContext context) async {
+    final pref = await SharedPreferences.getInstance();
+    final tune = pref.getString('playingTune');
     await Future.delayed(2.seconds);
     await setTheme();
     final userToken = await LocalDb.localDb.getValue(authTokenKey);
 
     if (userToken != null) {
-      if (context.mounted) {
-        context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
-      }
+      context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
     } else {
       if (context.mounted) {
         context.pushAndRemoveUntilNamed(AppRoutes.login);

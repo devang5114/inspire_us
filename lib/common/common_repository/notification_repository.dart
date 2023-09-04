@@ -3,6 +3,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 final notificationRepoProvider =
     Provider<NotificationRepository>((ref) => NotificationRepository());
@@ -17,22 +18,18 @@ class NotificationRepository {
             id: 10,
             channelKey: 'schedule_channel',
             title: 'Alarm $time',
-            body: title,
+            body: title.isEmpty ? 'Alarm is ringing' : title,
             wakeUpScreen: true,
             ticker: 'ticker',
             locked: true,
             color: Colors.blueAccent,
+            // payload: ,
             backgroundColor: Colors.teal.withOpacity(.2),
             notificationLayout: NotificationLayout.Default),
         actionButtons: [
           NotificationActionButton(
-            key: 'SNOOZE',
-            label: 'Snooze',
-          ),
-          NotificationActionButton(
             key: 'DISMISS',
             label: 'Dismiss',
-            buttonType: ActionButtonType.DisabledAction,
           ),
         ]);
   }
@@ -75,6 +72,15 @@ class NotificationRepository {
   }
 
   Future<void> requestPermission() async {
+    // await Permission.manageExternalStorage.request();
+    print(await Permission.storage.request());
+    try {
+      final t = await Permission.audio.request();
+      print('audio permssion ${t.isGranted}');
+    } catch (e) {
+      print(e);
+    }
+
     final result = await awesomeNotifications.isNotificationAllowed();
     if (!result) {
       awesomeNotifications.requestPermissionToSendNotifications();

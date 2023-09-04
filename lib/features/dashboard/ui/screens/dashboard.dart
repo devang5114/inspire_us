@@ -28,7 +28,7 @@ class _DashBoardState extends ConsumerState<DashBoard>
     super.initState();
     tabController = TabController(length: 5, vsync: this, initialIndex: 2);
     ref.read(notificationRepoProvider).requestPermission();
-    ref.read(dashboardController).init(tabController);
+    ref.read(dashboardController).init(tabController, context);
   }
 
   @override

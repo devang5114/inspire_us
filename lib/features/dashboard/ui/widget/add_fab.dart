@@ -6,6 +6,7 @@ import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
+import 'package:inspire_us/main.dart';
 
 import '../../../../common/common_repository/notification_repository.dart';
 import '../../../alarm/controller/alarm_controller.dart';

@@ -69,6 +69,7 @@ dependencies:
   connectivity_plus:
   cached_network_image:
   shared_preferences: ^2.2.1
+  audioplayers:
 
 
 flutter_launcher_icons:

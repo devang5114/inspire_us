@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:inspire_us/common/model/alarm_model.dart';
-import 'package:inspire_us/common/utils/constants/enums.dart';
-import 'package:inspire_us/features/alarm/ui/screens/add_alarm.dart';
 import 'package:inspire_us/features/auth/ui/screens/change_password.dart';
-import 'package:inspire_us/features/auth/ui/screens/confirm_otp.dart';
 import 'package:inspire_us/features/auth/ui/screens/forget_password.dart';
 import 'package:inspire_us/features/profile/ui/screens/profile_edit.dart';
 import 'package:inspire_us/features/recording/ui/screens/my_recordings.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../../features/alarm/ui/screens/alarm_ring.dart';
 import '../../../features/auth/ui/screens/login.dart';
 import '../../../features/auth/ui/screens/register.dart';
 import '../../../features/dashboard/ui/screens/dashboard.dart';

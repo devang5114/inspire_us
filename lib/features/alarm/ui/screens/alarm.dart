@@ -1,4 +1,3 @@
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
@@ -46,5 +45,12 @@ class _AlarmState extends ConsumerState<Alarm> {
       floatingActionButton: const AddFab(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  play() async {
+    final audioPlayer = AudioPlayer();
+    await audioPlayer
+        .setFilePath('path/storage/emulated/0/Download/1693646741-23.mp3');
+    audioPlayer.play();
   }
 }

@@ -51,6 +51,7 @@ class ChangePasswordView extends ConsumerWidget {
                 ),
                 hintText: 'Password',
                 validator: passValidator,
+                autoValidateMode: AutovalidateMode.onUserInteraction,
                 prefixIcon: Icon(
                   Icons.password_rounded,
                   size: 23.h,
@@ -68,6 +69,7 @@ class ChangePasswordView extends ConsumerWidget {
                 hintText: 'Confirm Password',
                 validator: (val) =>
                     confirmPassValidator(val, loginWatch.changePassword ?? ''),
+                autoValidateMode: AutovalidateMode.onUserInteraction,
                 prefixIcon: Icon(
                   Icons.password_rounded,
                   size: 23.h,
