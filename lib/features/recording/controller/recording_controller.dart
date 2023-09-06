@@ -7,6 +7,7 @@ import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/widgets/button.dart';
 import 'package:inspire_us/common/utils/widgets/text_input.dart';
+import 'package:inspire_us/features/dashboard/controller/dashboard_controller.dart';
 import 'package:inspire_us/features/recording/repository/recording_repository.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -256,6 +257,7 @@ class RecordingController extends ChangeNotifier {
         uploadTags = '';
         notifyListeners();
       }
+      ref.read(dashboardController).getGlobalRecordings(context);
     } else {
       Fluttertoast.showToast(
           msg: 'Failed to upload audio try again..',

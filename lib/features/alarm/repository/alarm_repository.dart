@@ -1,221 +1,210 @@
 import 'dart:async';
-
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/model/day_model.dart';
+import 'package:inspire_us/common/utils/constants/repeat_enum.dart';
+import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:inspire_us/features/alarm/controller/alarm_controller.dart';
+import 'package:inspire_us/features/alarm/repository/alarm_api_reposioty.dart';
+import 'package:inspire_us/features/audio/controller/ringtoneplayer_manager.dart';
 import 'package:intl/intl.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:vibration/vibration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:volume_controller/volume_controller.dart';
 
 import '../../../common/model/alarm_model.dart';
 
-final alarmRepoProvider = Provider<AlarmRepository>((ref) {
-  return AlarmRepository(ref);
-});
-
-Future<void> scheduleAlarm(AlarmModel alarmModel) async {
-  // if (alarmModel.days.any((day) => day.isEnable)) {
-  //   final formater = DateFormat('hh:mm a');
-  //
-  //   for (int i = 0; i < alarmModel.days.length; i++) {
-  //     final day = alarmModel.days[i];
-  //
-  //     if (day.isEnable) {
-  //       // Calculate the time for this specific day
-  //       final DateTime alarmTime = DateTime(
-  //         alarmModel.time.year,
-  //         alarmModel.time.month,
-  //         alarmModel.time.day + i, // Add 'i' days to the alarm time
-  //         alarmModel.time.hour,
-  //         alarmModel.time.minute,
-  //       );
-  //
-  //       final val = await AndroidAlarmManager.oneShotAt(
-  //         alarmTime,
-  //         alarmModel.toneId,
-  //         showAlarm,
-  //         params: {
-  //           'id': alarmModel.toneId,
-  //           'title': alarmModel.label,
-  //           'time': formater.format(alarmTime)
-  //         },
-  //         exact: true,
-  //         alarmClock: true,
-  //         wakeup: true,
-  //         allowWhileIdle: true,
-  //       );
-  //
-  //       print(
-  //           'Scheduled alarm for ${day.name} at ${formater.format(alarmTime)}: val $val');
-  //     }
-  //   }
-  // } else {
-  final formater = DateFormat('hh:mm a');
-  final val = await AndroidAlarmManager.oneShotAt(
-      alarmModel.time, alarmModel.toneId, showAlarm,
-      params: {
-        'id': alarmModel.toneId,
-        'title': alarmModel.label,
-        'time': formater.format(alarmModel.time)
-      },
-      exact: true,
-      rescheduleOnReboot: true,
-      alarmClock: true,
-      wakeup: true,
-      allowWhileIdle: true);
-  print('val $val');
-  // }
-}
-
-showAlarm(int id, Map<String, dynamic> params) async {
-  await playAlarm(params['id']);
-  await showNotification(params['title'], params['time']);
-
-  // AwesomeNotifications().actionStream.listen((event) {
-  //   if (event.buttonKeyPressed == 'DISMISS') {
-  //     // NotificationRepository().stopAlarm(audioPlayer);
-  //   }
-  // });
-}
-
-playAlarm(int id) async {
-  SharedPreferences pref = await SharedPreferences.getInstance();
-  final path = pref.getString(id.toString());
-  print('null');
-  if (path != null) {
-    print('not null');
-
-    AudioPlayer audioPlayer = AudioPlayer()..setFilePath(path);
-    audioPlayer.setLoopMode(LoopMode.all);
-    audioPlayer.play();
-    pref.setString('playingTune', path);
-  }
-}
-
-showNotification(String title, String time) async {
-  await NotificationRepository().showAlarmNotification(title, time);
-}
-
 class AlarmRepository {
-  AlarmRepository(this.ref);
-  Ref ref;
-
-  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
-
-  // Future<void> scheduldeAalarm(AlarmModel alarmModel) async {
-  //   final val = await AndroidAlarmManager.oneShotAt(
-  //       alarmModel.time, alarmModel.id, showAlarm,
-  //       exact: true, alarmClock: true, wakeup: true, allowWhileIdle: true);
-  //   print('val $val');
-  // print('schedule Alarm');
-  // DateTime alarmTime = alarmModel.time;
-  // if (alarmTime.isBefore(DateTime.now())) {
-  //   print('alarm is before');
-  //   alarmTime = alarmTime.add(const Duration(days: 1));
-  //   print(alarmTime);
-  // }
-  // final androidNotificationDetails = AndroidNotificationDetails(
-  //     '\$id', 'Waikey Alarms',
-  //     sound: const RawResourceAndroidNotificationSound('alarm_sound'),
-  //     importance: Importance.max,
-  //     priority: Priority.high,
-  //     additionalFlags: Int32List.fromList([4]),
-  //     fullScreenIntent: true,
-  //     enableLights: true,
-  //     visibility: NotificationVisibility.public,
-  //     ticker: 'ticker',
-  //     icon: 'alarm',
-  //     playSound: true);
-  //
-  // const darwinNotificationDetails = DarwinNotificationDetails(
-  //   presentAlert: true,
-  //   presentSound: true,
-  //   sound: 'alarm.aiff',
-  // );
-  //
-  // final notificationDetails = NotificationDetails(
-  //     android: androidNotificationDetails, iOS: darwinNotificationDetails);
-  // final body = alarmModel.label == '' ? 'Alarm' : alarmModel.label;
-  //
-  // if (!alarmModel.days.any((day) => day.isEnable)) {
-  //   print('hii from single alarm');
-  //   await flutterLocalNotificationsPlugin.zonedSchedule(
-  //     alarmModel.id,
-  //     '${alarmTime.hour} : ${alarmTime.minute}',
-  //     body,
-  //     TZDateTime.from(alarmTime, local),
-  //     notificationDetails,
-  //     uiLocalNotificationDateInterpretation:
-  //         UILocalNotificationDateInterpretation.absoluteTime,
-  //     androidScheduleMode: AndroidScheduleMode.alarmClock,
-  //     payload: '${alarmTime.hour} : ${alarmTime.minute} ',
-  //     androidAllowWhileIdle: true,
-  //   );
-  // } else {
-  //   for (int i = 0; i < alarmModel.days.length; i++) {
-  //     if (alarmModel.days[i].isEnable) {
-  //       print('hiiidsdssd');
-  //       final weeklyTime = DateTime(
-  //         alarmTime.year,
-  //         alarmTime.month,
-  //         alarmTime.day - alarmTime.weekday + i + 1, // Adjust day
-  //         alarmTime.hour,
-  //         alarmTime.minute,
-  //       );
-  //       await flutterLocalNotificationsPlugin.zonedSchedule(
-  //         // Use a unique id for each scheduled notification
-  //         alarmModel.id * 10 + i,
-  //         '${alarmTime.hour} : ${alarmTime.minute}',
-  //         body,
-  //         TZDateTime.from(weeklyTime, local),
-  //         notificationDetails,
-  //         androidAllowWhileIdle: true,
-  //         uiLocalNotificationDateInterpretation:
-  //             UILocalNotificationDateInterpretation.absoluteTime,
-  //         matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-  //       );
-  //     }
-  //   }
-  // }
-  // }
-
-  Future<void> removeSchedulerAlarm(AlarmModel alarmModel) async {
-    // print('hireeei');
-    // final List<PendingNotificationRequest> pendingNotificationRequest =
-    //     await flutterLocalNotificationsPlugin.pendingNotificationRequests();
-    // if (alarmModel.days.any((day) => day.isEnable)) {
-    //   for (var notification in pendingNotificationRequest) {
-    //     if ((notification.id / 10).floor() == alarmModel.id) {
-    //       await flutterLocalNotificationsPlugin.cancel(notification.id);
-    //     }
-    //     print('from remove shcedular $notification');
-    //   }
-    // } else {
-    //   flutterLocalNotificationsPlugin.cancel(alarmModel.id);
-    // }
-  }
-
-  Future<void> toggleAlarmOnOf(AlarmModel alarmModel) async {
-    print('hii');
-    if (alarmModel.isEnable) {
-      await removeSchedulerAlarm(alarmModel);
-    } else {
-      // await scheduleAalarm(alarmModel);
+  static scheduleAlarmEveryDay(AlarmModel alarmModel) async {
+    for (int i = 0; i < alarmModel.days.length; i++) {
+      final alarmTime = alarmModel.time;
+      DateTime weeklyTime = DateTime(
+        alarmTime.year,
+        alarmTime.month,
+        alarmTime.day - alarmTime.weekday + i + 1, // Adjust day
+        alarmTime.hour,
+        alarmTime.minute,
+      );
+      final id = alarmModel.id * 10 + i;
+      // Handle the case where the day addition may exceed the number of days in the month
+      if (weeklyTime.month != alarmModel.time.month) {
+        weeklyTime = weeklyTime.subtract(const Duration(days: 1));
+      }
+      print(weeklyTime);
+      await setAlarm(weeklyTime, alarmModel,
+          id: id, alarmName: 'Schedule Everyday');
     }
   }
 
-  requestNotificationPermission() async {
-    // await flutterLocalNotificationsPlugin
-    //     .resolvePlatformSpecificImplementation<
-    //         AndroidFlutterLocalNotificationsPlugin>()
-    //     ?.requestPermission();
-    // await flutterLocalNotificationsPlugin
-    //     .resolvePlatformSpecificImplementation<
-    //         IOSFlutterLocalNotificationsPlugin>()
-    //     ?.requestPermissions();
+  static Future<void> scheduleAlarm(AlarmModel alarmModel) async {
+    if (alarmModel.repeat == Repeat.everyDay) {
+      scheduleAlarmEveryDay(alarmModel);
+    } else if (alarmModel.repeat == Repeat.days) {
+      scheduleAlarmDayWise(alarmModel);
+    } else {
+      setAlarm(alarmModel.time, alarmModel, alarmName: 'Schedule Onece');
+    }
+  }
+
+  static scheduleAlarmDayWise(AlarmModel alarmModel) async {
+    for (int i = 0; i < alarmModel.days.length; i++) {
+      final day = alarmModel.days[i];
+      final alarmTime = alarmModel.time;
+      if (day.isEnable) {
+        // Calculate the time for this specific day
+        DateTime weeklyTime = DateTime(
+          alarmTime.year,
+          alarmTime.month,
+          alarmTime.day - alarmTime.weekday + i + 1, // Adjust day
+          alarmTime.hour,
+          alarmTime.minute,
+        );
+        final id = alarmModel.id * 10 + i;
+
+        // Handle the case where the day addition may exceed the number of days in the month
+        if (weeklyTime.month != alarmModel.time.month) {
+          weeklyTime = weeklyTime.subtract(const Duration(days: 1));
+        }
+        await setAlarm(weeklyTime, alarmModel,
+            id: id, alarmName: 'Schedule DayWise');
+      }
+    }
+  }
+
+  static showAlarm(int id, Map<String, dynamic> params) async {
+    playAlarm(params['toneId'], params['vibration']);
+    await showNotification(params['alarmId'], params['title'], params['time']);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('activeAlarmId', params['alarmId'].toString());
+    print('Alarm id in bg${params['alarmId']}');
+  }
+
+  static playAlarm(int id, bool vibration) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    final VolumeController volumeController = VolumeController();
+
+    final path = pref.getString(id.toString());
+    if (path != null) {
+      RingTonePlayerManager ringTonePlayerManager = RingTonePlayerManager();
+      ringTonePlayerManager.init(path);
+      ringTonePlayerManager.play();
+      if (vibration) {
+        Timer.periodic(1.seconds, (timer) {
+          Vibration.vibrate(duration: 1000);
+        });
+      }
+
+      volumeController.setVolume(1.0, showSystemUI: false);
+    }
+  }
+
+  static showNotification(int id, String title, String time) async {
+    await NotificationRepository().showAlarmNotification(id, title, time);
+  }
+
+  static cancelAlarm(AlarmModel alarmModel) async {
+    if (alarmModel.repeat == Repeat.everyDay) {
+      for (int i = 0; i < alarmModel.days.length; i++) {
+        final id = alarmModel.id * 10 + i;
+        final val = await AndroidAlarmManager.cancel(id);
+        print('delete alarm $val $id');
+      }
+    } else if (alarmModel.repeat == Repeat.days) {
+      for (int i = 0; i < alarmModel.days.length; i++) {
+        final day = alarmModel.days[i];
+        if (day.isEnable) {
+          final id = alarmModel.id * 10 + i;
+          final val = await AndroidAlarmManager.cancel(id);
+          print('delete alarm $val $id');
+        }
+      }
+    } else {
+      final val = await AndroidAlarmManager.cancel(alarmModel.id);
+      print('delete alarm $val ');
+    }
+  }
+
+  static toggleAlarm(AlarmModel alarmModel, bool value) {
+    if (value) {
+      scheduleAlarm(alarmModel);
+    } else {
+      cancelAlarm(alarmModel);
+    }
+  }
+
+  static Future<void> setAlarm(DateTime time, AlarmModel alarmModel,
+      {int? id, String? alarmName}) async {
+    final formater = DateFormat('hh:mm a');
+    DateTime alarmTime = time;
+    if (alarmTime.isBefore(DateTime.now())) {
+      alarmTime = alarmTime.add(const Duration(days: 1));
+    }
+
+    final val = await AndroidAlarmManager.oneShotAt(
+      alarmTime,
+      id ?? alarmModel.id,
+      showAlarm,
+      params: {
+        'alarmId': alarmModel.id,
+        'toneId': alarmModel.toneId,
+        'title': alarmModel.label,
+        'time': formater.format(alarmTime),
+        'vibration': alarmModel.vibration
+      },
+      exact: true,
+      alarmClock: true,
+      wakeup: true,
+      allowWhileIdle: true,
+    );
+    print('$alarmName $val');
+    print('time $alarmTime');
+  }
+
+  static Future<void> synchronizeAlarms(dynamic ref) async {
+    ({List<AlarmModel>? alarmList, String? error}) result =
+        await ref.read(alarmApiRepoProvider).getUserAlarms();
+    if (result.error != null) {
+      Fluttertoast.showToast(msg: 'Fail to synchronize Alarms ${result.error}');
+      return;
+    }
+    print('synchronizeAlarms');
+
+    List<AlarmModel> localAlarmsList =
+        LocalDb.localDb.alarmBox!.values.toList();
+    List<AlarmModel> serverAlarmsList = result.alarmList!;
+    final localAlarmIds = localAlarmsList.map((e) => e.id).toSet();
+
+    List<AlarmModel> newOrUpdatedAlarms = [];
+    List<int> updatedAlarmIds = [];
+    for (final serverAlarm in serverAlarmsList) {
+      if (!localAlarmIds.contains(serverAlarm.id)) {
+        //Add new alarm
+        newOrUpdatedAlarms.add(serverAlarm);
+        scheduleAlarm(serverAlarm);
+      } else {
+        final matchingLocalAlarm = localAlarmsList.firstWhere(
+            (localAm) => localAm.id == serverAlarm.id,
+            orElse: AlarmModel.emptyModel);
+        if (matchingLocalAlarm.id != -1 &&
+            !matchingLocalAlarm.isEqualTo(serverAlarm)) {
+          newOrUpdatedAlarms.add(serverAlarm);
+          updatedAlarmIds.add(serverAlarm.id);
+        }
+      }
+    }
+
+    //remove the alarm that are no longer available in server
+    localAlarmsList.removeWhere((localAm) {
+      return !(serverAlarmsList.any((serverAm) => serverAm.id == localAm.id));
+    });
+    localAlarmsList
+        .removeWhere((localAlarm) => updatedAlarmIds.contains(localAlarm.id));
+    print('New or updated Alarm $newOrUpdatedAlarms');
+    localAlarmsList.addAll(newOrUpdatedAlarms);
+    await LocalDb.localDb.clearAlarmBox();
+    await LocalDb.localDb.addAllAlarms(localAlarmsList);
   }
 }

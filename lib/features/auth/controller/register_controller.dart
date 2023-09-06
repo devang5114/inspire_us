@@ -26,6 +26,7 @@ class RegisterController extends ChangeNotifier {
   bool termAndCond = false;
   bool obsecure = true;
   bool loading = false;
+  String? authToken;
 
   toggleObsecure() {
     obsecure = !obsecure;
@@ -45,8 +46,8 @@ class RegisterController extends ChangeNotifier {
           .read(authRepoProvider)
           .registerRequest(name!, email!, password!);
       if (authResponse.registerCode != null && authResponse.authToken != null) {
-        await LocalDb.localDb.putValue(authTokenKey, authResponse.authToken);
         registerCode = authResponse.registerCode;
+        authToken = authResponse.authToken;
         if (context.mounted) {
           context.push(const ConfirmOtp(otpType: OtpType.emailVerify));
         }
@@ -79,6 +80,7 @@ class RegisterController extends ChangeNotifier {
           .verifyEmail(email!, registerCode.toString());
       if (authResponse.isEmailVerified != null) {
         if (authResponse.isEmailVerified!) {
+          await LocalDb.localDb.putValue(authTokenKey, authToken);
           Fluttertoast.showToast(
               msg: 'Email Verified..',
               gravity: ToastGravity.CENTER,

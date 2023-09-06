@@ -13,20 +13,22 @@ class AlarmApiRepository {
   AlarmApiRepository(this.ref);
   Ref ref;
 
-  Future<({List<Alarm>? alarmList, String? error})> getUserAlarms() async {
+  Future<({List<AlarmModel>? alarmList, String? error})> getUserAlarms() async {
     final userId = await LocalDb.localDb.getValue(userIdKey);
     final authToken = await LocalDb.localDb.getValue(authTokenKey);
+    print(userId);
+    print(authToken);
     Map<String, dynamic> headers = {'Authorization': 'Bearer $authToken'};
 
     final apiResponse = await ref.read(apiRepoProvider).postRequest(
         endPoint: 'all-alarms', data: {'user_id': userId}, headers: headers);
     if (apiResponse.response != null) {
       final data = apiResponse.response!.data;
-
+      print(data);
       final alarmJsonData = data['data'];
-      final List<Alarm> alarmsList = [];
+      final List<AlarmModel> alarmsList = [];
       for (var alarmData in alarmJsonData) {
-        alarmsList.add(Alarm.fromJson(alarmData));
+        alarmsList.add(AlarmModel.fromJson(alarmData));
       }
       return (error: null, alarmList: alarmsList);
     }

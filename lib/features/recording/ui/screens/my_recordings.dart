@@ -2,8 +2,9 @@ import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/helper/loading.dart';
 import 'package:inspire_us/common/utils/widgets/button.dart';
+import 'package:inspire_us/features/auth/controller/register_controller.dart';
 import 'package:inspire_us/features/recording/controller/recording_controller.dart';
-
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import '../../../../common/config/theme/theme_manager.dart';
 import '../../../audio/ui/widgets/audio_tile.dart';
 
@@ -67,18 +68,25 @@ class _MyRecordingsState extends ConsumerState<MyRecordings> {
                     ],
                   ),
                 )
-              : ListView.builder(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: recordingWatch.myRecordings.length,
-                  itemBuilder: (context, index) {
-                    final audioModel = recordingWatch.myRecordings
-                        .toList()
-                        .reversed
-                        .toList()[index];
-                    return AudioTile(audioModel: audioModel);
-                  },
+              : LiquidPullToRefresh(
+                  backgroundColor: Colors.white,
+                  springAnimationDurationInMilliseconds: 500,
+                  onRefresh: () => ref
+                      .read(recordingController.notifier)
+                      .initMyRecordings(context),
+                  child: ListView.builder(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: recordingWatch.myRecordings.length,
+                    itemBuilder: (context, index) {
+                      final audioModel = recordingWatch.myRecordings
+                          .toList()
+                          .reversed
+                          .toList()[index];
+                      return AudioTile(audioModel: audioModel);
+                    },
+                  ),
                 ),
     );
   }

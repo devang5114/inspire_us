@@ -6,6 +6,7 @@ class AppAssets {
   static const String recording = 'assets/images/recordings.png';
   static const String record = 'assets/images/record.png';
   static const String voiceIcon = 'assets/images/voice.png';
+  static const String alarmLottie = 'assets/lottie/alarm_lottie.json';
 
   static const String activeRecordingGif = 'assets/images/active-recording.gif';
 }

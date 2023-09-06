@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:hive/hive.dart';
+import 'package:inspire_us/features/alarm/controller/alarm_controller.dart';
 
 import '../utils/constants/repeat_enum.dart';
 import 'day_model.dart';
@@ -30,8 +31,10 @@ class AlarmModel extends HiveObject {
   @HiveField(9)
   final Repeat repeat;
   @HiveField(10)
+  final bool vibration;
   AlarmModel(
       {int? id,
+      required this.vibration,
       required this.time,
       required this.alarmSound,
       required this.days,
@@ -48,6 +51,7 @@ class AlarmModel extends HiveObject {
       String? label,
       String? alarmSound,
       DateTime? time,
+      bool? vibration,
       List<Day>? days,
       bool? isEnable,
       DateTime? updatedAt,
@@ -56,6 +60,7 @@ class AlarmModel extends HiveObject {
     return AlarmModel(
         id: id ?? this.id,
         days: days ?? this.days,
+        vibration: vibration ?? this.vibration,
         time: time ?? this.time,
         alarmSound: alarmSound ?? this.alarmSound,
         label: label ?? this.label,
@@ -63,6 +68,82 @@ class AlarmModel extends HiveObject {
         toneId: toneId ?? this.toneId,
         isEnable: isEnable ?? this.isEnable,
         updatedAt: updatedAt ?? this.updatedAt);
+  }
+
+  bool isEqualTo(AlarmModel serverAlarm) {
+    return id == serverAlarm.id &&
+        days == serverAlarm.days &&
+        time == serverAlarm.time &&
+        toneId == serverAlarm.toneId &&
+        label == serverAlarm.label &&
+        repeat == serverAlarm.repeat;
+  }
+
+  factory AlarmModel.emptyModel() {
+    return AlarmModel(
+        vibration: false,
+        time: DateTime.now(),
+        alarmSound: '',
+        days: [],
+        isEnable: true,
+        repeat: Repeat.once,
+        toneId: 2,
+        id: -1);
+  }
+
+  factory AlarmModel.fromJson(Map<String, dynamic> json) {
+    String timePart = json['time_part'] ?? 'AM';
+    int hours = int.parse(json['time_hours']);
+    if (timePart == 'PM') {
+      hours += 12;
+    }
+    return AlarmModel(
+      id: json['id'],
+      label: json['title'] ?? 'Alarm',
+      time: DateTime(
+        DateTime.now().year, // Assuming current year
+        DateTime.now().month, // Assuming current month
+        DateTime.now().day, // Assuming current day
+        hours,
+        int.parse(json['time_minutes']),
+      ),
+      isEnable: json['status'] == 'ACTIVE',
+      alarmSound: json['alarm_sound'] ?? '',
+      days: _parseDays(json),
+      repeat: _parseRepeat(json['repeat']),
+      toneId: json['tone_id'],
+      vibration: false,
+      createdAt: DateTime.tryParse(json['created_at']),
+      updatedAt: DateTime.tryParse(json['updated_at']),
+    );
+  }
+  static List<Day> _parseDays(Map<String, dynamic> json) {
+    final repeat = _parseRepeat(json['repeat']);
+    if (repeat == Repeat.everyDay) {
+      return activeDays;
+    } else if (repeat == Repeat.once) {
+      return emptyDays;
+    }
+    return [
+      Day(name: 'Mon', isEnable: json['MON'] == '1'),
+      Day(name: 'Tue', isEnable: json['TUE'] == '1'),
+      Day(name: 'Wed', isEnable: json['WED'] == '1'),
+      Day(name: 'Thu', isEnable: json['THU'] == '1'),
+      Day(name: 'Fri', isEnable: json['FRI'] == '1'),
+      Day(name: 'Sat', isEnable: json['SAT'] == '1'),
+      Day(name: 'Sun', isEnable: json['SUN'] == '1'),
+    ];
+  }
+
+  static Repeat _parseRepeat(String repeatValue) {
+    switch (repeatValue) {
+      case 'ONCE':
+        return Repeat.once;
+      case 'DAYS':
+        return Repeat.days;
+      default:
+        return Repeat.once;
+    }
   }
 
   @override

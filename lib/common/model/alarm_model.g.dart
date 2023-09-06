@@ -18,6 +18,7 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
     };
     return AlarmModel(
       id: fields[0] as int?,
+      vibration: fields[10] as bool,
       time: fields[2] as DateTime,
       alarmSound: fields[4] as String,
       days: (fields[5] as List).cast<Day>(),
@@ -33,7 +34,7 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
   @override
   void write(BinaryWriter writer, AlarmModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
       ..writeByte(8)
       ..write(obj.toneId)
       ..writeByte(9)
-      ..write(obj.repeat);
+      ..write(obj.repeat)
+      ..writeByte(10)
+      ..write(obj.vibration);
   }
 
   @override

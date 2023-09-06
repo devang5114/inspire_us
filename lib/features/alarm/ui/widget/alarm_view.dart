@@ -15,7 +15,7 @@ class AlarmView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final alarmWatch = ref.watch(alarmController);
     bool isDarkMode = ref.watch(themeModeProvider) == ThemeMode.dark;
-
+    print('Lenght of audios${alarmWatch.alarmTones.map((e) => e.id).toList()}');
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -26,7 +26,7 @@ class AlarmView extends ConsumerWidget {
               'Label',
               style: TextStyle(
                   fontSize: 15.sp,
-                  color: isDarkMode ? Colors.white : Colors.blue,
+                  color: context.colorScheme.onBackground,
                   fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 10.h),
@@ -34,8 +34,13 @@ class AlarmView extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
               controller: ref.read(alarmController).labelController,
               hintText: 'Alarm',
+              filled: true,
+              filledColor: isDarkMode
+                  ? Colors.blueGrey.withOpacity(.3)
+                  : Colors.grey.shade50,
               customBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: context.colorScheme.onBackground),
+                borderSide: BorderSide(
+                    color: context.colorScheme.onBackground.withOpacity(.5)),
                 borderRadius: BorderRadius.circular(10.r),
               ),
             ),
@@ -53,7 +58,7 @@ class AlarmView extends ConsumerWidget {
               fontWeight: FontWeight.w500),
         ),
       ),
-      SizedBox(height: 10.h),
+      SizedBox(height: 15.h),
       const AlarmDaySelector(),
       SizedBox(height: 15.h),
       Padding(
@@ -78,24 +83,29 @@ class AlarmView extends ConsumerWidget {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide(
-                          color: context.colorScheme.onBackground,
+                          color:
+                              context.colorScheme.onBackground.withOpacity(.5),
                         )),
+                    filled: true,
+                    fillColor: isDarkMode
+                        ? Colors.blueGrey.withOpacity(.3)
+                        : Colors.grey.shade50,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.r),
                         borderSide: BorderSide(
-                          color: context.colorScheme.onBackground,
+                          color:
+                              context.colorScheme.onBackground.withOpacity(.5),
                         ))),
-                items: List.generate(alarmWatch.alarmTones.length, (index) {
-                  final audio = alarmWatch.alarmTones[index];
-                  return DropdownMenuItem(
-                      value: audio.id,
-                      child: Text(
-                        audio.title,
-                        style: TextStyle(
-                            fontSize: 15.sp,
-                            color: context.colorScheme.onBackground),
-                      ));
-                }),
+                items: alarmWatch.alarmTones
+                    .map((e) => DropdownMenuItem(
+                        value: e.id,
+                        child: Text(
+                          e.title,
+                          style: TextStyle(
+                              fontSize: 15.sp,
+                              color: context.colorScheme.onBackground),
+                        )))
+                    .toList(),
                 onChanged: (val) {
                   ref.read(alarmController.notifier).selectedToneId =
                       int.parse(val!.toString());
@@ -129,6 +139,28 @@ class AlarmView extends ConsumerWidget {
                   ],
                 ),
               ),
+            SizedBox(height: 20.h),
+            SwitchListTile.adaptive(
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10.w, vertical: 0.h),
+              tileColor: isDarkMode
+                  ? Colors.blueGrey.withOpacity(.3)
+                  : Colors.grey.shade50,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                  side: BorderSide(
+                      color: context.colorScheme.onBackground.withOpacity(.5))),
+              value: alarmWatch.vibrate,
+              onChanged: (value) {
+                ref.read(alarmController.notifier).vibrate = value;
+                ref.read(alarmController).notifyListeners();
+              },
+              title: Text(
+                'Vibrate when alarm sounds',
+                style: TextStyle(
+                    fontSize: 15.sp, color: context.colorScheme.onBackground),
+              ),
+            ),
             SizedBox(height: 20.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,

@@ -12,18 +12,24 @@ class NotificationRepository {
   FlutterRingtonePlayer flutterRingtonePlayer = FlutterRingtonePlayer();
   AwesomeNotifications awesomeNotifications = AwesomeNotifications();
 
-  Future<void> showAlarmNotification(String title, String time) async {
+  Future<void> showAlarmNotification(int id, String title, String time) async {
     await awesomeNotifications.createNotification(
         content: NotificationContent(
-            id: 10,
+            id: id,
             channelKey: 'schedule_channel',
             title: 'Alarm $time',
             body: title.isEmpty ? 'Alarm is ringing' : title,
             wakeUpScreen: true,
             ticker: 'ticker',
             locked: true,
+            displayOnBackground: true,
+            displayOnForeground: true,
+            category: NotificationCategory.Alarm,
+            // showWhen: ,
+            summary: 'Alarm is Ringing',
+            criticalAlert: true,
             color: Colors.blueAccent,
-            // payload: ,
+            payload: {'alarmId': id.toString(), 'title': title, 'time': time},
             backgroundColor: Colors.teal.withOpacity(.2),
             notificationLayout: NotificationLayout.Default),
         actionButtons: [

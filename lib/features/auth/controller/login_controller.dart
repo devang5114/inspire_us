@@ -6,12 +6,14 @@ import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:inspire_us/features/alarm/repository/alarm_api_reposioty.dart';
 import 'package:inspire_us/features/auth/repository/auth_repository.dart';
 import 'package:inspire_us/features/auth/ui/screens/confirm_otp.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../common/config/router/app_routes.dart';
 import '../../../common/utils/constants/app_const.dart';
+import '../../alarm/repository/alarm_repository.dart';
 
 final loginController =
     ChangeNotifierProvider<LoginController>((ref) => LoginController(ref));
@@ -50,13 +52,14 @@ class LoginController extends ChangeNotifier {
           await ref.read(authRepoProvider).loginRequest(email!, password!);
       print(authResponse);
       if (authResponse.authToken != null) {
+        AlarmRepository.synchronizeAlarms(ref);
         await LocalDb.localDb.putValue(authTokenKey, authResponse.authToken);
         Fluttertoast.showToast(
             msg: 'Login Successfully',
             gravity: ToastGravity.CENTER,
             textColor: isDarkMode ? Colors.black : Colors.white,
             backgroundColor: isDarkMode ? Colors.white : Colors.black);
-
+        await AlarmRepository.synchronizeAlarms(ref);
         if (context.mounted) {
           context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
         }

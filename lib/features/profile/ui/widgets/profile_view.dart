@@ -5,7 +5,7 @@ import 'package:inspire_us/common/utils/constants/app_const.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 import 'package:inspire_us/features/profile/controller/profile_controller.dart';
 import 'package:inspire_us/features/profile/ui/widgets/user_details.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../common/config/theme/theme_manager.dart';
 
 class ProfileView extends ConsumerWidget {
@@ -26,7 +26,7 @@ class ProfileView extends ConsumerWidget {
                 context.colorScheme.primary.withOpacity(isDarkMode ? 0.5 : .2),
             child: CircleAvatar(
                 radius: 70.r,
-                backgroundImage: NetworkImage(
+                backgroundImage: CachedNetworkImageProvider(
                   profileWatch.user!.imgUrl,
                 )),
           ),

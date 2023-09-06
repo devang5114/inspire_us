@@ -4,7 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
+import 'package:inspire_us/common/model/global_audio_model.dart';
 import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
+import 'package:inspire_us/features/audio/repository/audio_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,12 +25,12 @@ class DashboardController extends ChangeNotifier {
 
   init(TabController val, BuildContext context) async {
     tabController = val;
-    getUserRecordings(context);
+    getGlobalRecordings(context);
   }
 
-  getUserRecordings(BuildContext context) async {
-    ({List<AudioModel>? audioList, String? error}) result =
-        await ref.read(recordingRepoProvider).getUserRecording();
+  getGlobalRecordings(BuildContext context) async {
+    ({List<GlobalAudioModel>? audioList, String? error}) result =
+        await ref.read(audioRepoProvider).getGlobalTones();
     if (result.audioList != null) {
       for (var audio in result.audioList!) {
         downloadAndStorePath(audio);
@@ -43,7 +45,7 @@ class DashboardController extends ChangeNotifier {
     }
   }
 
-  downloadAndStorePath(AudioModel audioModel) async {
+  downloadAndStorePath(GlobalAudioModel audioModel) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Dio dio = Dio();
     final path = await _getSavePath(audioModel.id);

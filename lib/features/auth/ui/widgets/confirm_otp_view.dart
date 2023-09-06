@@ -34,7 +34,9 @@ class ConfirmOtpView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Email Verification code has been sent to your email Address',
+              isEmailVerifyOtp
+                  ? 'Email Verification code has been sent to your email Address'
+                  : 'Please enter the OTP code sent to your email',
               style: TextStyle(
                 color: context.colorScheme.onBackground,
                 fontSize: 15.sp,

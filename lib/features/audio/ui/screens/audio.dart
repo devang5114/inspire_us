@@ -3,8 +3,10 @@ import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/helper/loading.dart';
 import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
 import 'package:inspire_us/features/audio/controller/audio_controller.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import '../../../../common/config/theme/theme_manager.dart';
+import '../../../alarm/repository/alarm_repository.dart';
 import '../widgets/audio_list.dart';
 
 class Audio extends ConsumerStatefulWidget {
@@ -37,11 +39,17 @@ class _AudioState extends ConsumerState<Audio> {
         ),
         body: audioWatch.loading
             ? const Loading()
-            : const Column(
-                children: [
-                  WarningWidgetValueNotifier(),
-                  Expanded(child: AudioList()),
-                ],
+            : LiquidPullToRefresh(
+                backgroundColor: Colors.white,
+                springAnimationDurationInMilliseconds: 500,
+                onRefresh: () =>
+                    ref.read(audioController.notifier).init(context),
+                child: const Column(
+                  children: [
+                    WarningWidgetValueNotifier(),
+                    Expanded(child: AudioList()),
+                  ],
+                ),
               ));
   }
 }

@@ -75,8 +75,10 @@ class ProfileController extends ChangeNotifier {
             .updateUserData(nameController.text, emailAddressController.text,
                 pickedImage!.path);
         if (result.updateStatus) {
-          init(context);
-          context.pop();
+          if (context.mounted) {
+            init(context);
+            context.pop();
+          }
         } else {
           Fluttertoast.showToast(
               msg: result.error ?? 'Something went wrong',

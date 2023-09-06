@@ -29,8 +29,16 @@ class LocalDb {
     await inspireUsBox!.put(key, value);
   }
 
+  Future<void> clearAlarmBox() async {
+    await alarmBox!.clear();
+  }
+
   Future<void> addAlarm(AlarmModel alarmModel) async {
     await alarmBox!.add(alarmModel);
+  }
+
+  Future<void> addAllAlarms(List<AlarmModel> alarms) async {
+    await alarmBox!.addAll(alarms);
   }
 
   Future<void> putAlarmAtIndex(int index, AlarmModel alarmModel) async {

@@ -67,9 +67,14 @@ dependencies:
   pinput:
   jwt_decoder:
   connectivity_plus:
-  cached_network_image:
+  cached_network_image: ^3.2.3
   shared_preferences: ^2.2.1
   audioplayers:
+  lottie: ^2.6.0
+  volume_controller:
+  vibration:
+  liquid_pull_to_refresh:
+
 
 
 flutter_launcher_icons:
@@ -107,6 +112,7 @@ flutter:
     - assets/svg/
     - assets/audio/
     - assets/images/
+    - assets/lottie/alarm_lottie.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

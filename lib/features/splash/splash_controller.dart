@@ -8,6 +8,7 @@ import 'package:inspire_us/features/alarm/ui/screens/alarm_ring.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/utils/constants/app_const.dart';
+import '../alarm/repository/alarm_repository.dart';
 
 final splashController = ChangeNotifierProvider<SplashController>((ref) {
   return SplashController(ref);
@@ -25,6 +26,7 @@ class SplashController extends ChangeNotifier {
     final userToken = await LocalDb.localDb.getValue(authTokenKey);
 
     if (userToken != null) {
+      await AlarmRepository.synchronizeAlarms(ref);
       context.pushAndRemoveUntilNamed(AppRoutes.dashboard);
     } else {
       if (context.mounted) {

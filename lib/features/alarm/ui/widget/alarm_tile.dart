@@ -32,8 +32,8 @@ class AlarmTile extends ConsumerWidget {
       closedElevation: 0,
       closedColor: context.colorScheme.background,
       closedBuilder: (context, action) {
-        final neverRepeat = alarmModel.days
-            .fold(true, (previousValue, element) => true == !element.isEnable);
+        // final neverRepeat = alarmModel.days
+        //     .fold(true, (previousValue, element) => true == !element.isEnable);
 
         return ValueListenableBuilder(
           valueListenable: ConnectionStatusValueNotifier(),
@@ -169,7 +169,7 @@ class AlarmTile extends ConsumerWidget {
                                           print(alarmModel.isEnable);
                                           ref
                                               .read(alarmController.notifier)
-                                              .onToggle(updateAlarm);
+                                              .onToggle(updateAlarm, value);
                                         }
                                       : null,
                                 )

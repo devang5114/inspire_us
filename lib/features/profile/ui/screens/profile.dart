@@ -39,10 +39,10 @@ class _ProfileState extends ConsumerState<Profile> {
         )),
         body: profileWatch.loading
             ? const Loading()
-            : const Column(
+            : Column(
                 children: [
                   WarningWidgetValueNotifier(),
-                  ProfileView(),
+                  Expanded(child: ProfileView()),
                 ],
               ));
   }

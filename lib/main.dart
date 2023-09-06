@@ -2,6 +2,7 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:inspire_us/common/config/theme/theme_manager.dart';
+import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
 import 'package:inspire_us/features/alarm/ui/screens/alarm_ring.dart';
 import 'package:inspire_us/features/splash/splash.dart';
@@ -26,20 +27,34 @@ void main() async {
   await FlutterDownloader.initialize(
     debug: true, // Set to false for production
   );
-  final pref = await SharedPreferences.getInstance();
-  String path = pref.getString('playingTune') ?? '';
+  final alarm = await getActiveAlarm();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
     runApp(ProviderScope(
         child: MyApp(
-      path: path,
+      activeAlarm: alarm,
     )));
   });
 }
 
+Future<AlarmModel?> getActiveAlarm() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  final id = pref.getString('activeAlarmId');
+  if (id == null) return null;
+
+  try {
+    final alarm = LocalDb.localDb.alarmBox!.values.firstWhere((element) {
+      return element.id == int.parse(id);
+    });
+    return alarm;
+  } catch (e) {
+    return null;
+  }
+}
+
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key, required this.path});
-  final String path;
+  const MyApp({super.key, this.activeAlarm});
+  final AlarmModel? activeAlarm;
 
   static GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
   @override
@@ -49,13 +64,12 @@ class MyApp extends ConsumerWidget {
         builder: (context, child) => MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
-              // navigatorKey: navigationKey,
+              navigatorKey: navigationKey,
               darkTheme: AppTheme.darkTheme,
               themeMode: ref.watch(themeModeProvider),
               onGenerateRoute: AppRouteManager.onGenerateRoute,
-              // initialRoute: AppRoutes.splash,
-              home: path != ''
-                  ? AlarmRing(audioPath: path, title: 'Alarm is Ringing')
+              home: activeAlarm != null
+                  ? AlarmRing(activeAlarmModel: activeAlarm!)
                   : const Splash(),
             ));
   }
@@ -69,31 +83,33 @@ Future<void> initAwesomeNotifications() async {
         channelName: 'Schedule Alarms',
         playSound: false,
         enableVibration: true,
+        defaultRingtoneType: DefaultRingtoneType.Alarm,
         channelDescription: 'This channel is used for schedule the alarms',
         defaultColor: Colors.blueAccent,
-        importance: NotificationImportance.Max,
+        importance: NotificationImportance.High,
+        defaultPrivacy: NotificationPrivacy.Public,
         channelShowBadge: true)
   ]);
-  // AwesomeNotifications().displayedStream.listen((notification) {
-  //   NotificationRepository().playAlarm();
-  // });
-  // AwesomeNotifications().displayedStream.listen((event) {
-  //   MyApp.navigationKey.currentState?.pushAndRemoveUntil(
-  //       MaterialPageRoute(
-  //         builder: (context) =>
-  //             AlarmRing(audioPath: action.body!, title: action.title ?? ''),
-  //       ),
-  //       (route) => false);
-  // });
-  // AwesomeNotifications().actionStream.listen((action) {
-  //   if (action.buttonKeyPressed == 'DisMiss') {
-  //     MyApp.navigationKey.currentState?.pushAndRemoveUntil(
-  //         MaterialPageRoute(
-  //           builder: (context) =>
-  //               AlarmRing(audioPath: action.body!, title: action.title ?? ''),
-  //         ),
-  //         (route) => false);
-  //   }
-  // });
+  AwesomeNotifications().createdStream.listen((notification) async {
+    print('Display stream entry');
+    if (notification.channelKey == 'schedule_channel') {
+      print('Display stream entry');
+      final id = int.parse(notification.payload!['alarmId']!);
+      print('alarm Id for stream $id');
+      final alarmModel = LocalDb.localDb.alarmBox!.values
+          .firstWhere((element) => element.id == id);
+      MyApp.navigationKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) {
+            return AlarmRing(
+              isAppActive: true,
+              activeAlarmModel: alarmModel,
+            );
+          },
+        ),
+        (route) => false,
+      );
+    }
+  });
   print(val);
 }

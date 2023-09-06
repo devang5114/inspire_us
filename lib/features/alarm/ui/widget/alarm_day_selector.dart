@@ -60,9 +60,25 @@ class AlarmDaySelector extends ConsumerWidget {
               decoration: InputDecoration(
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                  filled: true,
+                  fillColor: isDarkMode
+                      ? Colors.blueGrey.withOpacity(.3)
+                      : Colors.grey.shade50,
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
+                          color: context.colorScheme.onBackground
+                              .withOpacity(.5))),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
+                          color: context.colorScheme.onBackground
+                              .withOpacity(.5))),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                  )),
+                      borderRadius: BorderRadius.circular(10.r),
+                      borderSide: BorderSide(
+                          color: context.colorScheme.onBackground
+                              .withOpacity(.5)))),
               items: [
                 DropdownMenuItem(
                     value: Repeat.once.name,

@@ -20,6 +20,8 @@ class MyTextInput extends ConsumerWidget {
       this.customBorder,
       this.onTap,
       this.focusNode,
+      this.filled,
+      this.filledColor,
       this.controller});
 
   final String? label;
@@ -29,6 +31,8 @@ class MyTextInput extends ConsumerWidget {
   final bool borderInputNone;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final bool? filled;
+  final Color? filledColor;
   final TextInputType? keyboardType;
   final EdgeInsets? padding;
   final TextEditingController? controller;
@@ -57,6 +61,8 @@ class MyTextInput extends ConsumerWidget {
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         contentPadding: padding,
+        filled: filled,
+        fillColor: filledColor,
         labelStyle: TextStyle(
             fontSize: 16.sp, color: isDarkMode ? Colors.blueGrey : Colors.grey),
         label: label != null ? Text(label!) : null,
