@@ -8,7 +8,6 @@ import '../../../../common/model/alarm_model.dart';
 import '../../../../common/utils/helper/local_database_helper.dart';
 import '../../../../common/utils/widgets/button.dart';
 import '../../../dashboard/controller/dashboard_controller.dart';
-import '../../repository/alarm_repository.dart';
 
 class AlarmList extends ConsumerWidget {
   const AlarmList({this.isHomePage = false, super.key});

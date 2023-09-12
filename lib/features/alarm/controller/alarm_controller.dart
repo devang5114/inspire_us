@@ -5,7 +5,7 @@ import 'package:inspire_us/common/config/theme/theme_manager.dart';
 import 'package:inspire_us/common/model/alarm_model.dart';
 import 'package:inspire_us/common/model/global_audio_model.dart';
 import 'package:inspire_us/features/alarm/repository/alarm_api_reposioty.dart';
-import 'package:inspire_us/features/audio/repository/audio_repository.dart';
+import 'package:inspire_us/features/tone/repository/audio_repository.dart';
 import '../../../common/model/day_model.dart';
 import '../../../common/utils/constants/repeat_enum.dart';
 import '../../../common/utils/helper/local_database_helper.dart';
@@ -160,7 +160,6 @@ class AlarmController extends ChangeNotifier {
       }
     } else {
       addAlarmLoading = true;
-
       final audioModel = alarmTones
           .firstWhere((element) => element.id == selectedToneId.toString());
       notifyListeners();
@@ -226,7 +225,7 @@ class AlarmController extends ChangeNotifier {
     addAlarmLoading = true;
     // notifyListeners();
     ({List<GlobalAudioModel>? audioList, String? error}) result =
-        await ref.read(audioRepoProvider).getGlobalTones();
+        await ref.read(toneRepoProvider).getGlobalTones();
     if (result.audioList != null) {
       alarmTones = result.audioList!;
       if (updateAlarmIndex == null) {

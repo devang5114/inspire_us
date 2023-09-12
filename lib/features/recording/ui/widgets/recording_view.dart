@@ -35,7 +35,8 @@ class RecordingView extends ConsumerWidget {
             ]),
         Expanded(
             child: recordingWatch.index == 0
-                ? const RecordingWidget().animate().fade()
+                ? SingleChildScrollView(
+                    child: const RecordingWidget().animate().fade())
                 : const UploadWidget().animate().fade())
       ],
     );

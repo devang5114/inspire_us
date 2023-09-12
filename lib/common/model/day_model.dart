@@ -9,4 +9,9 @@ class Day {
   @HiveField(1)
   bool isEnable;
   Day({required this.name, required this.isEnable});
+
+  @override
+  String toString() {
+    return 'name: $name, isEnable:$isEnable';
+  }
 }

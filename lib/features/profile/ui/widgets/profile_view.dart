@@ -20,15 +20,40 @@ class ProfileView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CircleAvatar(
-            radius: 80.r,
-            backgroundColor:
-                context.colorScheme.primary.withOpacity(isDarkMode ? 0.5 : .2),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    // backgroundColor: Colors.transparent,
+                    // elevation: 0,
+                    child: Container(
+                        height: context.screenHeight * 0.5,
+                        width: context.screenWidth * 0.7,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.r)),
+                        child: FittedBox(
+                          child: CachedNetworkImage(
+                            imageUrl: profileWatch.user!.imgUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+                  );
+                },
+              );
+            },
             child: CircleAvatar(
-                radius: 70.r,
-                backgroundImage: CachedNetworkImageProvider(
-                  profileWatch.user!.imgUrl,
-                )),
+              radius: 80.r,
+              backgroundColor: context.colorScheme.primary
+                  .withOpacity(isDarkMode ? 0.5 : .2),
+              child: CircleAvatar(
+                  radius: 70.r,
+                  backgroundImage: CachedNetworkImageProvider(
+                    profileWatch.user!.imgUrl,
+                  )),
+            ),
           ),
           SizedBox(height: 30.h),
           Padding(

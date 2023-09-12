@@ -6,7 +6,7 @@ import 'package:inspire_us/features/auth/controller/register_controller.dart';
 import 'package:inspire_us/features/recording/controller/recording_controller.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import '../../../../common/config/theme/theme_manager.dart';
-import '../../../audio/ui/widgets/audio_tile.dart';
+import '../../../tone/ui/widgets/audio_tile.dart';
 
 class MyRecordings extends ConsumerStatefulWidget {
   const MyRecordings({super.key});

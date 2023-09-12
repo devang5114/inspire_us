@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
@@ -99,6 +100,8 @@ class AlarmRing extends ConsumerWidget {
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         await pref.setString('activeAlarmId', '0');
+                        Navigator.popUntil(context, (route) => false);
+                        await Future.delayed(200.ms);
                         exit(0);
                       },
                       child: Text(
@@ -125,6 +128,9 @@ class AlarmRing extends ConsumerWidget {
                         pref.setString('activeAlarmId', '0');
                         Fluttertoast.showToast(msg: 'Alarm snooze in 5 min');
                         await Future.delayed(3.seconds);
+                        Navigator.popUntil(context, (route) => false);
+                        await Future.delayed(200.ms);
+
                         exit(0);
                       },
                       child: Text(

@@ -1,17 +1,11 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:inspire_us/common/common_repository/notification_repository.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/model/global_audio_model.dart';
-import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
-import 'package:inspire_us/features/audio/repository/audio_repository.dart';
+import 'package:inspire_us/features/alarm/repository/alarm_repository.dart';
+import 'package:inspire_us/features/tone/repository/audio_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../common/model/audio_model.dart';
-import '../../recording/repository/recording_repository.dart';
 
 final dashboardController = ChangeNotifierProvider<DashboardController>((ref) {
   return DashboardController(ref);
@@ -26,11 +20,12 @@ class DashboardController extends ChangeNotifier {
   init(TabController val, BuildContext context) async {
     tabController = val;
     getGlobalRecordings(context);
+    AlarmRepository.synchronizeAlarms(ref);
   }
 
   getGlobalRecordings(BuildContext context) async {
     ({List<GlobalAudioModel>? audioList, String? error}) result =
-        await ref.read(audioRepoProvider).getGlobalTones();
+        await ref.read(toneRepoProvider).getGlobalTones();
     if (result.audioList != null) {
       for (var audio in result.audioList!) {
         downloadAndStorePath(audio);
@@ -75,6 +70,9 @@ class DashboardController extends ChangeNotifier {
   setPage(int i) {
     tabController!.animateTo(i);
     index = i;
+    if (i == 0 || i == 2) {
+      AlarmRepository.synchronizeAlarms(ref);
+    }
     notifyListeners();
   }
 }

@@ -79,6 +79,19 @@ class AlarmModel extends HiveObject {
         repeat == serverAlarm.repeat;
   }
 
+  AlarmModel setEnable(bool? val) {
+    return AlarmModel(
+        vibration: vibration,
+        time: time,
+        alarmSound: alarmSound,
+        days: days,
+        isEnable: val ?? isEnable,
+        repeat: repeat,
+        toneId: toneId,
+        id: id,
+        label: label);
+  }
+
   factory AlarmModel.emptyModel() {
     return AlarmModel(
         vibration: false,
@@ -148,7 +161,7 @@ class AlarmModel extends HiveObject {
 
   @override
   String toString() {
-    return 'id : $id time : $time, alarmSound : $alarmSound days : $days createdAt: $createdAt updateAt: $updatedAt ';
+    return 'id : $id time : $time, alarmSound : $alarmSound repeat:$repeat isEnable $isEnable createdAt: $createdAt updateAt: $updatedAt ';
   }
 }
 

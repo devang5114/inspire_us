@@ -1,17 +1,16 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:inspire_us/common/config/theme/theme_export.dart';
-import 'package:inspire_us/features/audio/ui/screens/audio.dart';
 import 'package:inspire_us/features/home/ui/screens/home.dart';
+import 'package:inspire_us/features/tone/ui/screens/tone.dart';
 import '../../../../common/config/theme/theme_manager.dart';
 import '../../../alarm/ui/screens/alarm.dart';
 import '../../../profile/ui/screens/profile.dart';
 import '../../../recording/ui/screens/recording.dart';
 import '../../controller/dashboard_controller.dart';
 import '../widget/bottom_navbar.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../../../../common/common_repository/notification_repository.dart';
+import 'package:inspire_us/features/alarm/repository/alarm_repository.dart';
 
 class DashBoard extends ConsumerStatefulWidget {
   const DashBoard({super.key});
@@ -56,7 +55,7 @@ class _DashBoardState extends ConsumerState<DashBoard>
           child: Scaffold(
             body: [
               const Alarm().animate().fade(),
-              const Audio().animate().fade(),
+              const Tone().animate().fade(),
               const Home().animate().fade(),
               const Recording().animate().fade(),
               const Profile().animate().fade(),

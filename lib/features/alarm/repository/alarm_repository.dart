@@ -9,13 +9,13 @@ import 'package:inspire_us/common/utils/constants/repeat_enum.dart';
 import 'package:inspire_us/common/utils/helper/local_database_helper.dart';
 import 'package:inspire_us/features/alarm/controller/alarm_controller.dart';
 import 'package:inspire_us/features/alarm/repository/alarm_api_reposioty.dart';
-import 'package:inspire_us/features/audio/controller/ringtoneplayer_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 import '../../../common/model/alarm_model.dart';
+import '../../tone/controller/ringtoneplayer_manager.dart';
 
 class AlarmRepository {
   static scheduleAlarmEveryDay(AlarmModel alarmModel) async {
@@ -74,12 +74,29 @@ class AlarmRepository {
     }
   }
 
+  @pragma('vm:entry-point')
   static showAlarm(int id, Map<String, dynamic> params) async {
-    playAlarm(params['toneId'], params['vibration']);
-    await showNotification(params['alarmId'], params['title'], params['time']);
+    final toneId = params['toneId'];
+    final vibration = params['vibration'];
+    final alarmId = params['alarmId'];
+    final title = params['title'];
+    bool repeatOnce = params['once'];
+    final time = params['time'];
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('activeAlarmId', params['alarmId'].toString());
-    print('Alarm id in bg${params['alarmId']}');
+
+    playAlarm(toneId, vibration);
+    await showNotification(alarmId, title, time);
+    await pref.setString('activeAlarmId', alarmId.toString());
+    if (repeatOnce) {
+      if (pref.containsKey('completedAlarmIds')) {
+        List<String> completedAlarmIds =
+            pref.getStringList('completedAlarmIds') ?? [];
+        completedAlarmIds.add(alarmId.toString());
+        pref.setStringList('completedAlarmIds', completedAlarmIds);
+      } else {
+        await pref.setStringList('completedAlarmIds', []);
+      }
+    }
   }
 
   static playAlarm(int id, bool vibration) async {
@@ -123,7 +140,7 @@ class AlarmRepository {
       }
     } else {
       final val = await AndroidAlarmManager.cancel(alarmModel.id);
-      print('delete alarm $val ');
+      print('delete alarm $val');
     }
   }
 
@@ -139,10 +156,15 @@ class AlarmRepository {
       {int? id, String? alarmName}) async {
     final formater = DateFormat('hh:mm a');
     DateTime alarmTime = time;
-    if (alarmTime.isBefore(DateTime.now())) {
+    final currentTime = DateTime.now();
+    print('alarm time $time, current time:$currentTime');
+
+    if (alarmTime.isBefore(currentTime)) {
+      print('next alarm time $time, current time:$currentTime');
+
       alarmTime = alarmTime.add(const Duration(days: 1));
     }
-
+    print('Alarm repeat ${alarmModel.repeat}');
     final val = await AndroidAlarmManager.oneShotAt(
       alarmTime,
       id ?? alarmModel.id,
@@ -151,6 +173,7 @@ class AlarmRepository {
         'alarmId': alarmModel.id,
         'toneId': alarmModel.toneId,
         'title': alarmModel.label,
+        'once': alarmModel.repeat == Repeat.once,
         'time': formater.format(alarmTime),
         'vibration': alarmModel.vibration
       },
@@ -164,6 +187,20 @@ class AlarmRepository {
   }
 
   static Future<void> synchronizeAlarms(dynamic ref) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    List<String> completedAlarmIds =
+        pref.getStringList('completedAlarmIds') ?? [];
+    completedAlarmIds.forEach((id) async {
+      final alarmModel = LocalDb.localDb.alarmBox!.values
+          .firstWhere((e) => e.id.toString() == id);
+      final alarm = alarmModel.copyWith(isEnable: false);
+      ({String? error, bool status}) result =
+          await ref.read(alarmApiRepoProvider).updateAlarm(alarm);
+      print(result.status);
+      print(result.error);
+    });
+    pref.setStringList('completedAlarmIds', []);
+
     ({List<AlarmModel>? alarmList, String? error}) result =
         await ref.read(alarmApiRepoProvider).getUserAlarms();
     if (result.error != null) {
@@ -179,7 +216,7 @@ class AlarmRepository {
 
     List<AlarmModel> newOrUpdatedAlarms = [];
     List<int> updatedAlarmIds = [];
-    for (final serverAlarm in serverAlarmsList) {
+    for (AlarmModel serverAlarm in serverAlarmsList) {
       if (!localAlarmIds.contains(serverAlarm.id)) {
         //Add new alarm
         newOrUpdatedAlarms.add(serverAlarm);

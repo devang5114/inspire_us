@@ -4,9 +4,14 @@ import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/extentions/context_extention.dart';
 
 class BusyOverlay extends StatelessWidget {
-  const BusyOverlay({super.key, required this.child, required this.show});
+  const BusyOverlay(
+      {super.key,
+      required this.child,
+      required this.show,
+      this.hideBg = false});
   final Widget child;
   final bool show;
+  final bool hideBg;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class BusyOverlay extends StatelessWidget {
         ignoring: show,
         child: Stack(
           children: [
-            child,
+            if (!hideBg) child,
             if (show)
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaY: 1, sigmaX: 1),
