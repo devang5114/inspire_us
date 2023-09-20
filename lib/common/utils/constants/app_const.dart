@@ -6,7 +6,7 @@ const String userIdKey = 'userIdKey';
 const String isDarkModeActiveKey = 'isDarkModeActive';
 
 // Api constant
-const String baseUrl = 'https://inspireus.thunderstormdevelopers.com/api/';
+const String baseUrl = 'https://grizzleappdevelopment.com/api/';
 
 //images
 const String defaultImgUrl =

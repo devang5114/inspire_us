@@ -1,7 +1,6 @@
 import 'package:inspire_us/common/config/theme/theme_export.dart';
 import 'package:inspire_us/common/utils/constants/enums.dart';
 import 'package:inspire_us/common/utils/helper/network_state_helper.dart';
-import 'package:inspire_us/features/alarm/controller/alarm_controller.dart';
 import 'package:inspire_us/features/alarm/repository/alarm_repository.dart';
 import 'package:inspire_us/features/alarm/ui/widget/alarm_list.dart';
 import 'package:inspire_us/features/dashboard/ui/widget/add_fab.dart';
